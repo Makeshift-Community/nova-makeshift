@@ -1,8 +1,8 @@
 //External dependencies
 import { Client, Intents } from 'discord.js'
 
-//Load info
-const token = require("./token.json")	//I'm an idiot - Thanks for the lesson
+// Custom dependencies
+import token from './src/resources/token.js' // I'm an idiot, thanks for the lesson
 
 const makeshiftbot = new Client({
   intents: [Intents.FLAGS.GUILD_MESSAGES]
