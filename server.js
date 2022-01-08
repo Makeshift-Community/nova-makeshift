@@ -17,24 +17,6 @@ require("./src/commands/index")(makeshiftbot)
 //Load custom modules
 require("./src/modules/index")(makeshiftbot)
 
-
-//*
 //Start bot
 makeshiftbot.login(token)
-	.catch(console.error)
-//*/
-makeshiftbot.on("ready", () => {
-	atNovaHelp(makeshiftbot.user)
-})
-makeshiftbot.on("resume", ()=> {
-	atNovaHelp(makeshiftbot.user)
-})
-
-function atNovaHelp(user){
-	user.setPresence({
-		activity: {
-			name: "@Nova help",
-			type: "PLAYING"
-		}
-	})
-}
+  .catch(console.error)
