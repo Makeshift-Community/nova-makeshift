@@ -1,14 +1,11 @@
 //External dependencies
-const commando = require("discord.js-commando")
+import { Client, Intents } from 'discord.js'
 
 //Load info
 const token = require("./token.json")	//I'm an idiot - Thanks for the lesson
 
-//Create new Discord client
-const makeshiftbot = new commando.Client({
-	commandPrefix : "!",
-	unknownCommandResponse : false,
-	owner : "153595272465743872"
+const makeshiftbot = new Client({
+  intents: [Intents.FLAGS.GUILD_MESSAGES]
 })
 
 //Load and register commands.
