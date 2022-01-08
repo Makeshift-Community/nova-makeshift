@@ -3,6 +3,7 @@
 	"version": "5.0.0",
 	"description": "A bot for the Makeshift community.",
 	"main": "server.js",
+	"type": "module",
 	"engines": {
 		"node": "^16.9.0"
 	},
