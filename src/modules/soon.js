@@ -14,7 +14,7 @@ export default async function (message) {
     .catch(console.error)
   const emoji = await guild?.emojis?.fetch(EMOJI_ID)
     .catch(console.error)
-  if(emoji === undefined) {return}
+  if (emoji === undefined) { return }
   message.react(emoji)
     .catch(console.error)
 }
