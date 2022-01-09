@@ -5,7 +5,7 @@ const makeshift = require('../resources/makeshift.js')
 
 var traceIdMaster = 0
 
-const channelNames = [
+const CHANNEL_NAMES = [
   "The Fappin' Room 2.0",
   "Akkad n' Chill",
   'The Nuthouse',
@@ -55,7 +55,7 @@ async function create_new_voiceChannel (voiceState, traceId) {
   // Check to see if connected to Lobby
   if (voiceState.channelID !== makeshift.channels.voice.lobby) return
 
-  const name = sample(channelNames)
+  const channelName = sample(CHANNEL_NAMES)
   // const name = "Talk " + (newMember.guild.channels.get(makeshift.categories.voice).children.filter(child => child.type == "voice").size - 1)
   const options = {
     type: 'voice',
