@@ -3,10 +3,11 @@ import handle8ball from '../modules/8ball.js'
 import handleSoon from '../modules/soon.js'
 
 export default function (client) {
-  client.on('message', handle)
+  client.on('messageCreate', handle)
 }
 
 const handle = async function (message) {
+  console.log("messageCreate")
   await handleSarcasm(message)
   await handle8ball(message)
   await handleSoon(message)
