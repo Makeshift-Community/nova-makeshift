@@ -3,15 +3,17 @@ import _ from 'lodash'
 
 import { COLORROLES as COLORS, GUILD as GUILD_ID } from '../resources/makeshift.js'
 
-const { size } = _
+const { values, size } = _
 
 export default async function (member) {
   // Check if member joined Makeshift guild
   if (member.guild.id !== GUILD_ID) { return }
 
-  const userId = BigInt(guildMember.user.id)
-  const colorId = userId % size(COLORS)
-  const color = COLORS[colorId]
-  guildMember.roles.add(color)
+  const userId = BigInt(member.user.id)
+  const colorCount = BigInt(size(COLORS))
+  let colorId = userId % colorCount
+  colorId = Number(colorId)
+  const color = values(COLORS)[colorId]
+  member.roles.add(color)
     .catch(console.error)
 }
