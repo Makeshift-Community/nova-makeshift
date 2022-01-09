@@ -60,6 +60,8 @@ const responsesCommon = [
 ]
 
 export default async function (message) {
+  // Check if message was received on guild
+  if (message.guild === undefined) { return }
   if (trigger.test(message.content) === false) { return }
 
   // Appropriate response to Zephyr
