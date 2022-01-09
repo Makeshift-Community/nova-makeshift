@@ -5,5 +5,5 @@ export default function (client) {
 }
 
 const handle = async function (oldState, newState) {
-  handleVoice(oldState, newState)
+  // handleVoice(oldState, newState)
 }
