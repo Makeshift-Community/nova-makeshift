@@ -6,8 +6,8 @@ import token from './src/resources/token.js' // I'm an idiot, thanks for the les
 import registerModules from './src/listeners/index.js'
 
 const makeshiftbot = new Client({
-  intents: [ Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS ],
-  partials: [ 'CHANNEL' ]
+  intents: [ Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS ],
+  partials: [ 'CHANNEL', 'GUILD_MEMBER' ]
 })
 
 registerModules(makeshiftbot)
