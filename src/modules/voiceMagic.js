@@ -29,7 +29,13 @@ const CHANNEL_NAMES = [
   "Aniki's Dungeon",
   'Disappointments Inc.',
   'Boomers anonymous',
-  'Crab Makeshift one crab crab'
+  'Crab Makeshift one crab crab',
+	"mmMmMMm gaming...",
+	"Hmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
+	"Can I uhhhhhhhhhhh",
+	"🦀 Content is Gone 🦀",
+	"H",
+	"Computer"
 ]
 
 export default async function (oldState, newState) {
