@@ -1,9 +1,9 @@
 import { sample } from 'lodash'
 
-// Config
-const makeshift = require('../resources/makeshift.js')
+import { GUILD as GUILD_ID, VOICECHANNELS, CATEGORIES, ROLES } from '../resources/makeshift.js'
+const CATEGORY_ID = CATEGORIES.VOICE
 
-var traceIdMaster = 0
+let traceIdMaster = 0
 
 const CHANNEL_NAMES = [
   "The Fappin' Room 2.0",
@@ -32,34 +32,34 @@ const CHANNEL_NAMES = [
 
 export default async function (oldState, newState) {
   // Check if this happened on the Makeshift guild
-  if (newState.guild.id !== makeshift.guild) return
-  // Check if member voiceChannel changed
-  if (newState.channel.id === oldState.channel.id) return
+  if (newState.guild.id !== GUILD_ID) { return }
+  // Check if member voice channel changed
+  if (newState.channel.id === oldState.channel.id) { return }
 
   const traceId = traceIdMaster++
 
   if (newState.channel !== undefined) {
-    // Member just connected
-    await assign_role_voice(newState.member, traceId)
-    create_new_voiceChannel(newState, traceId)
+    // Member just connected to a new voice channel
+    await assignVoiceRole(newState.member, traceId)
+    fetchEmptyVoiceChannel(newState, traceId)
   } else {
     // Member just disconnected
-    remove_role_voice(newState.member, traceId)
+    removeVoiceRole(newState.member, traceId)
   }
 
-  // Clean up after switching to new channel
-  cleanup_empty_voiceChannel(oldState.channel, traceId)
+  // A previous channel was left, potential cleanup necessary.
+  scheduleCleanup(oldState.channel, traceId)
 }
 
-async function create_new_voiceChannel (voiceState, traceId) {
+async function fetchEmptyVoiceChannel (voiceState, traceId) {
   // Check to see if connected to Lobby
-  if (voiceState.channelID !== makeshift.channels.voice.lobby) return
+  if (voiceState.channel.id !== VOICECHANNELS.LOBBY) return
 
   const channelName = sample(CHANNEL_NAMES)
-  // const name = "Talk " + (newMember.guild.channels.get(makeshift.categories.voice).children.filter(child => child.type == "voice").size - 1)
+  const category = await voiceState.guild.channels.fetch(CATEGORY_ID)
+  await category.fetch(false) // Fetch children
   const options = {
-    type: 'voice',
-    parent: voiceState.guild.channels.get(makeshift.categories.voice),
+    type: 'GUILD_VOICE',
     permissionOverwrites: [
       {
         type: 'member',
@@ -67,14 +67,14 @@ async function create_new_voiceChannel (voiceState, traceId) {
         allow: 17825808
       }
     ],
-    position: voiceState.guild.channels.get(makeshift.categories.voice).children.size - 3,
-    reason: `Requested by ${voiceState.member} (${voiceState.member.displayName})`
+    position: category.children.size - 3,
+    reason: `Requested by ${voiceState.member.displayName}`
   }
 
   try {
     if (process.env.DEBUG) console.log(`VOICEMAGIC A 00 (ID: ${traceId})`)
     // Create new channel
-    const channel = await voiceState.guild.channels.create(name, options)
+    const channel = await voiceState.guild.channels.create(channelName, options)
     if (process.env.DEBUG) console.log(`VOICEMAGIC A 01 (ID: ${traceId})`)
     // Move member into new channel
     await voiceState.setChannel(channel)
@@ -84,31 +84,27 @@ async function create_new_voiceChannel (voiceState, traceId) {
   }
 }
 
-async function assign_role_voice (member, traceId) {
-  if (member.roles.get(makeshift.roles.voice)) return // member doesn't have @voice role (recently connected)
-  try {
-    if (process.env.DEBUG) console.log(`VOICEMAGIC B 00 (ID: ${traceId})`)
-    await member.roles.add(makeshift.roles.voice)
-    if (process.env.DEBUG) console.log(`VOICEMAGIC B 01 (ID: ${traceId})`)
-  } catch (error) {
-    console.error(error)
-  }
+async function assignVoiceRole (member) {
+  const memberVoiceRole = member.roles.cache.has(ROLES.VOICE)
+  if (memberVoiceRole !== undefined) { return }
+  // Member doesn't have voice role yet, so they must have recently connected
+
+  await member.roles.add(ROLES.VOICE)
+    .catch(console.error)
 }
 
-async function remove_role_voice (member, traceId) {
-  if (!member.roles.get(makeshift.roles.voice)) return
-  try {
-    if (process.env.DEBUG) console.log(`VOICEMAGIC C 00 (ID: ${traceId})`)
-    await member.roles.remove(makeshift.roles.voice)
-    if (process.env.DEBUG) console.log(`VOICEMAGIC C 01 (ID: ${traceId})`)
-  } catch (error) {
-    console.error(error)
-  }
+async function removeVoiceRole (member, traceId) {
+  const memberVoiceRole = member.roles.cache.has(ROLES.VOICE)
+  if (memberVoiceRole === undefined) { return }
+  // Member still has voice role, remove
+
+  await member.roles.remove(ROLES.VOICE)
+    .catch(console.error)
 }
 
-function cleanup_empty_voiceChannel (voiceChannel, traceId) {
+function scheduleCleanup (voiceChannel, traceId) {
   // Check to see if previous voice channel exists
-  // This could be the case if member just joined VC while not being previously connected
+  // This could be the case if a member just joined VC while not being previously connected
   if (!voiceChannel) return
   // Check if channel is empty
   if (voiceChannel.members.first()) return
@@ -116,6 +112,7 @@ function cleanup_empty_voiceChannel (voiceChannel, traceId) {
     makeshift.channels.voice.lobby,
     makeshift.channels.voice.afk
   ]
+
   // Check to see if channel is protected
   var protectedChannel = false
   protectedChannels.forEach(channel => {
@@ -124,20 +121,30 @@ function cleanup_empty_voiceChannel (voiceChannel, traceId) {
   if (protectedChannel) return
 
   if (process.env.DEBUG) console.log(`VOICEMAGIC D 00 (ID: ${traceId})`)
+
   // Queue channel for deletion and wait 30s
-  setTimeout(async function () {
-    try {
-      if (process.env.DEBUG) console.log(`VOICEMAGIC D 01 (ID: ${traceId})`)
-      // Check if voice channel still exists
-      if (!voiceChannel) return
-      // Check if there's no person in the channel
-      if (voiceChannel.members.first()) return
-      if (process.env.DEBUG) console.log(`VOICEMAGIC D 02 (ID: ${traceId})`)
-      // Delete channel
-      await voiceChannel.delete()
-      if (process.env.DEBUG) console.log(`VOICEMAGIC D 03 (ID: ${traceId})`)
-    } catch (error) {
-      console.error(error)
+  setTimeout(cleanupVoiceChannel, 30e3)
+}
+
+const cleanupVoiceChannel = async function () {
+  try {
+    voiceChannel.fetch()
+    if (process.env.DEBUG) console.log(`VOICEMAGIC D 01 (ID: ${traceId})`)
+    // Check if voice channel still exists
+    if (voiceChannel === undefined) return
+    // Lock voice channel
+    // voiceChannel.
+    // Check if there's no person in the channel
+    if (voiceChannel.members.first()) {
+      // Someone connected in the mean time, unlock again
+      // voiceChannel.
+      return
     }
-  }, 30e3)
+    if (process.env.DEBUG) console.log(`VOICEMAGIC D 02 (ID: ${traceId})`)
+    // Delete channel
+    await voiceChannel.delete()
+    if (process.env.DEBUG) console.log(`VOICEMAGIC D 03 (ID: ${traceId})`)
+  } catch (error) {
+    console.error(error)
+  }
 }
