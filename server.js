@@ -14,3 +14,6 @@ registerModules(makeshiftbot)
 // Start bot
 makeshiftbot.login(token)
   .catch(console.error)
+  .then(() => {
+    console.log(`Logged in as ${makeshiftbot.user.tag}`)
+  })
