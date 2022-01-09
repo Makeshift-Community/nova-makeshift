@@ -1,7 +1,7 @@
 import { sample } from 'lodash'
 
 // Config
-const makeshift = require('../resources/makeshift.json')
+const makeshift = require('../resources/makeshift.js')
 
 var traceIdMaster = 0
 

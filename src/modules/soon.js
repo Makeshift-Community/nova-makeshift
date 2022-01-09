@@ -1,5 +1,5 @@
 // Dependencies
-const backend = require('../resources/backend.json')
+const backend = require('../resources/backend.js')
 
 const trigger = /soon$/gi
 
