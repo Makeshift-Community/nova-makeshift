@@ -10,8 +10,11 @@ export default async function (message) {
   // Check if message ends with "soon"
   if (trigger.test(message.content) === false) { return }
 
-  const guild = message.client.guilds.fetch(GUILD_ID)
-  const emoji = guild.emojis.fetch(EMOJI_ID)
+  const guild = await message.client.guilds.fetch(GUILD_ID)
+    .catch(console.error)
+  const emoji = await guild?.emojis?.fetch(EMOJI_ID)
+    .catch(console.error)
+  if(emoji === undefined) {return}
   message.react(emoji)
     .catch(console.error)
 }
