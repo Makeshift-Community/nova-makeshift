@@ -1,11 +1,34 @@
-//Config
-const makeshift = require("./../../resources/makeshift.json")
+import { sample } from "lodash"
 
-//Dependencies
-var { sample } = require("lodash")
+//Config
+const makeshift = require("../resources/makeshift.json")
 
 var traceIdMaster = 0
-//process.env.DEBUG = true
+
+const channelNames = [
+	"The Fappin' Room 2.0",
+	"Akkad n' Chill",
+	"The Nuthouse",
+	"Nerding Grounds",
+	"Do Emojis work here? 🤔",
+	"channelNames[Math.random(6)]",
+	"Your ad here!",
+	"I'm out of ideas...",
+	"Fresh Memes!",
+	"Midlife crisis",
+	"asdf",
+	"Very creative channel name",
+	"Who even reads these?",
+	"Not the Lobby",
+	"Makeshift relay",
+	"Dojo",
+	"Endo my Life",
+	"Stale Memes!",
+	"Aniki's Dungeon",
+	"Disappointments Inc.",
+	"Boomers anonymous",
+	"Crab Makeshift one crab crab"
+]
 
 /**
  * Handles the voice channels on the Makeshift guild. Creates a new channel upon joining the lobby, grants members the voice role and deltes unused channels.
