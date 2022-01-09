@@ -1,19 +1,19 @@
-const Command = require("./../../utils/novaCommand")
-var { oneLine } = require("common-tags")
+const Command = require('./../../utils/novaCommand')
+var { oneLine } = require('common-tags')
 
 module.exports = class extends Command {
-	constructor(client) {
-		super(client, {
-			name: "vor",
-			aliases: ["vorpost", "monologue"],
-			group: "memes-warframe",
-			description: "Look at them, ..."
-		})
-	}
-	
-	async run(message, args) {
-		let options = [
-			oneLine`Look at them, they come to this place when they know they are not pure.
+  constructor (client) {
+    super(client, {
+      name: 'vor',
+      aliases: ['vorpost', 'monologue'],
+      group: 'memes-warframe',
+      description: 'Look at them, ...'
+    })
+  }
+
+  async run (message, args) {
+    const options = [
+      oneLine`Look at them, they come to this place when they know they are not pure.
 			Tenno use the keys, but they are mere trespassers.
 			Only I, Vor, know the true power of the Void.
 			I was cut in half, destroyed, but through its Janus Key, the Void called to me.
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 			They will learn its simple truth.
 			The Tenno are lost, and they will resist.
 			But I, Vor, will cleanse this place of their impurity.`
-		]
-		this.sendOne(message, options, args)
-	}
+    ]
+    this.sendOne(message, options, args)
+  }
 }

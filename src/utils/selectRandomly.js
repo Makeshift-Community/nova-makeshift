@@ -1,4 +1,4 @@
-var { sample } = require("lodash")
+var { sample } = require('lodash')
 
 /**
  * Returns a single item from an array. If an invalid index is specified, a random item gets called instead.
@@ -7,8 +7,8 @@ var { sample } = require("lodash")
  * @return {Object} The object returned from the specified options.
  */
 function selectOne (options, choice) {
-	let option = options[choice - 1]
-	return option?option:sample(options)
+  const option = options[choice - 1]
+  return option || sample(options)
 }
 
 /**
@@ -18,17 +18,17 @@ function selectOne (options, choice) {
  * @param {string} name The name.
  * @return {Object} The object returned from the specified options.
  */
-function constructOne (options, choice = undefined, name = "Choice") {
-	var option = selectOne(options, choice)
-	option = selectOne(options, choice)
-	var index = options.indexOf(option)
-	let header = `${name} ${index + 1}/${options.length}`
-	if (!option.content) {
-		option.content = header
-	} else if (options.length > 1) {
-		option.content = `*${header}:*\n${option.content}`
-	}
-	return option
+function constructOne (options, choice = undefined, name = 'Choice') {
+  var option = selectOne(options, choice)
+  option = selectOne(options, choice)
+  var index = options.indexOf(option)
+  const header = `${name} ${index + 1}/${options.length}`
+  if (!option.content) {
+    option.content = header
+  } else if (options.length > 1) {
+    option.content = `*${header}:*\n${option.content}`
+  }
+  return option
 }
 
 module.exports = constructOne
