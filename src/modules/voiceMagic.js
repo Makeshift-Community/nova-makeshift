@@ -30,44 +30,33 @@ const channelNames = [
 	"Crab Makeshift one crab crab"
 ]
 
-/**
- * Handles the voice channels on the Makeshift guild. Creates a new channel upon joining the lobby, grants members the voice role and deltes unused channels.
- * @param {*} client The bot client.
- */
-module.exports = function(client){
-	client.on("voiceStateUpdate", (oldState, newState) => {
-		
-		//Check if this happened on the Makeshift guild
-		if(newState.guild.id !== makeshift.guild) return
-		//Check if member voiceChannel changed
-		if(newState.channelID === oldState.channelID) return
+export default async function (oldState, newState) {
+  // Check if this happened on the Makeshift guild
+  if (newState.guild.id !== makeshift.guild) return
+  // Check if member voiceChannel changed
+  if (newState.channel.id === oldState.channel.id) return
 
-		const traceId = traceIdMaster++
+  const traceId = traceIdMaster++
 
-		if (newState.channel) {//If connected to VC currently
-			//@voice role
-			(async()=>{
-				await assign_role_voice(newState.member, traceId)
-				create_new_voiceChannel(newState, traceId)
-			})()
-		}
-		//@voice role
-		else {//if disconnected from voice
-			remove_role_voice(newState.member, traceId)
-		}
-		
-		//Potentially clean up after switching to new channel
-		cleanup_empty_voiceChannel(oldState.channel, traceId)
+  if (newState.channel !== undefined) {
+    // Member just connected
+    await assign_role_voice(newState.member, traceId)
+    create_new_voiceChannel(newState, traceId)
+  } else {
+    // Member just disconnected
+    remove_role_voice(newState.member, traceId)
+  }
 
-	})
+  // Clean up after switching to new channel
+  cleanup_empty_voiceChannel(oldState.channel, traceId)
 }
 
 async function create_new_voiceChannel(voiceState, traceId){
 	//Check to see if connected to Lobby
 	if(voiceState.channelID !== makeshift.channels.voice.lobby) return
 
-	const channelNames = require("./resources/channelNames.json")
-	let name = sample(channelNames)
+  const name = sample(channelNames)
+  // const name = "Talk " + (newMember.guild.channels.get(makeshift.categories.voice).children.filter(child => child.type == "voice").size - 1)
 	//const name = "Talk " + (newMember.guild.channels.get(makeshift.categories.voice).children.filter(child => child.type == "voice").size - 1)
 	const options = {
 		type: "voice",
