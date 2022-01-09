@@ -60,6 +60,23 @@ const COMMON_RESPONSES = [
   ]
 ]
 
+function pickAnswer (author) {
+  const nRandom = Math.random()
+
+  // LEGENDARY
+  if ((nRandom * 1000) < 1) return (`Love you, ${author} 😘`)
+  // RARE
+  if ((nRandom * 15) < 1) {
+    return sample(RARE_RESPONSES)
+  }
+  // UNCOMMON
+  if ((nRandom * 5) < 1) {
+    return sample(UNCOMMON_RESPONSES)
+  }
+  // COMMON
+  return sample(COMMON_RESPONSES)
+}
+
 export default async function (message) {
   // Check if message was received on guild
   if (message.guild === undefined) { return }
@@ -71,23 +88,6 @@ export default async function (message) {
   }
 
   // Pick randomized answer
-  message.channel.send(pickAnswer(message))
+  message.channel.send(pickAnswer(message.author))
     .catch(console.error)
-}
-
-function pickAnswer (message) {
-  const nRandom = Math.random()
-
-  // LEGENDARY
-  if ((nRandom * 1000) < 1) return (`Love you, ${message.author} 😘`)
-  // RARE
-  if ((nRandom * 15) < 1) {
-    return sample(RARE_RESPONSES)
-  }
-  // UNCOMMON
-  if ((nRandom * 5) < 1) {
-    return sample(UNCOMMON_RESPONSES)
-  }
-  // COMMON
-  return sample(COMMON_RESPONSES)
 }
