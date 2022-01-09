@@ -3,7 +3,7 @@ import { sample } from 'lodash'
 
 const trigger = /^Nova,\s/gi
 const zephyrTrigger = /zephyr/gi
-const responsesRare = [
+const RARE_RESPONSES = [
   'My answer-module broke. Could you ask me again?',
   'Oh my gosh.. 🙄',
   '¯\\\\_(ツ)\\_/¯',
@@ -15,7 +15,7 @@ const responsesRare = [
   'You sound like a Limbo-main.',
   'Fuck off.'
 ]
-const responsesUncommon = [
+const UNCOMMON_RESPONSES = [
   'Not sure',
   'Dunno',
   'WTF?',
@@ -27,7 +27,7 @@ const responsesUncommon = [
   'Okay',
   'N-No!'
 ]
-const responsesCommon = [
+const COMMON_RESPONSES = [
   [
     'Certainly',
     'Yeah',
@@ -81,12 +81,12 @@ function pickAnswer (message) {
   if ((nRandom * 1000) < 1) return (`Love you, ${message.author} 😘`)
   // RARE
   if ((nRandom * 15) < 1) {
-    return sample(responsesRare)
+    return sample(RARE_RESPONSES)
   }
   // UNCOMMON
   if ((nRandom * 5) < 1) {
-    return sample(responsesUncommon)
+    return sample(UNCOMMON_RESPONSES)
   }
   // COMMON
-  return sample(responsesCommon)
+  return sample(COMMON_RESPONSES)
 }
