@@ -1,5 +1,6 @@
 // Dependencies
-import { sample } from 'lodash'
+import _ from 'lodash'
+const { sample } = _
 
 const trigger = /^Nova,\s/gi
 const zephyrTrigger = /zephyr/gi

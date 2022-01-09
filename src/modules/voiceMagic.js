@@ -1,6 +1,8 @@
-import { sample } from 'lodash'
+import _ from 'lodash'
 
 import { GUILD as GUILD_ID, VOICECHANNELS, CATEGORIES, ROLES } from '../resources/makeshift.js'
+
+const { sample } = _
 const CATEGORY_ID = CATEGORIES.VOICE
 
 let traceIdMaster = 0

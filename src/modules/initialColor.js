@@ -1,7 +1,9 @@
 // Dependencies
-import { size } from 'lodash'
+import _ from 'lodash'
 
 import { COLORROLES as COLORS, GUILD as GUILD_ID } from '../resources/makeshift.js'
+
+const { size } = _
 
 export default async function (member) {
   // Check if member joined Makeshift guild
