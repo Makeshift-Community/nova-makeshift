@@ -29,35 +29,33 @@ const UNCOMMON_RESPONSES = [
   'N-No!'
 ]
 const COMMON_RESPONSES = [
-  [
-    'Certainly',
-    'Yeah',
-    'Most likely',
-    'Yes',
-    'NO!',
-    '(☞ﾟヮﾟ)☞           No',
-    'Nah',
-    'Nope',
-    'Doubt it',
-    'Nuh-uh~',
-    'No.',
-    'Never ever',
-    'No',
-    'How about no?',
-    'Absolutely',
-    'Why not?',
-    'Not really',
-    'Negative.',
-    'No way!',
-    'Absolutely... **NOT!**',
-    '👎',
-    '👍',
-    'Definitely',
-    'No?',
-    'No Thanks!',
-    'Not on my watch',
-    '**NEIN!**'
-  ]
+  'Certainly',
+  'Yeah',
+  'Most likely',
+  'Yes',
+  'NO!',
+  '(☞ﾟヮﾟ)☞           No',
+  'Nah',
+  'Nope',
+  'Doubt it',
+  'Nuh-uh~',
+  'No.',
+  'Never ever',
+  'No',
+  'How about no?',
+  'Absolutely',
+  'Why not?',
+  'Not really',
+  'Negative.',
+  'No way!',
+  'Absolutely... **NOT!**',
+  '👎',
+  '👍',
+  'Definitely',
+  'No?',
+  'No Thanks!',
+  'Not on my watch',
+  '**NEIN!**'
 ]
 
 function pickAnswer (author) {
@@ -88,6 +86,7 @@ export default async function (message) {
   }
 
   // Pick randomized answer
-  message.channel.send(pickAnswer(message.author))
+  const answer = pickAnswer(message.author)
+  message.channel.send(answer)
     .catch(console.error)
 }
