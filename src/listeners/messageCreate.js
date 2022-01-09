@@ -7,7 +7,6 @@ export default function (client) {
 }
 
 const handle = async function (message) {
-  console.log("messageCreate")
   await handleSarcasm(message)
   await handle8ball(message)
   await handleSoon(message)
