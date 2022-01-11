@@ -5,8 +5,6 @@ import { GUILD as GUILD_ID, VOICECHANNELS, CATEGORIES, ROLES } from '../resource
 const { sample } = _
 const CATEGORY_ID = CATEGORIES.VOICE
 
-let traceIdMaster = 0
-
 const CHANNEL_NAMES = [
   "The Fappin' Room 2.0",
   "Akkad n' Chill",
@@ -30,12 +28,12 @@ const CHANNEL_NAMES = [
   'Disappointments Inc.',
   'Boomers anonymous',
   'Crab Makeshift one crab crab',
-	"mmMmMMm gaming...",
-	"Hmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
-	"Can I uhhhhhhhhhhh",
-	"🦀 Content is Gone 🦀",
-	"H",
-	"Computer"
+  'mmMmMMm gaming...',
+  'Hmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm',
+  'Can I uhhhhhhhhhhh',
+  '🦀 Content is Gone 🦀',
+  'H',
+  'Computer'
 ]
 
 export default async function (oldState, newState) {
@@ -44,22 +42,20 @@ export default async function (oldState, newState) {
   // Check if member voice channel changed
   if (newState.channel.id === oldState.channel.id) { return }
 
-  const traceId = traceIdMaster++
-
   if (newState.channel !== undefined) {
     // Member just connected to a new voice channel
-    await assignVoiceRole(newState.member, traceId)
-    fetchEmptyVoiceChannel(newState, traceId)
+    await assignVoiceRole(newState.member)
+    await assignEmptyVoiceChannel(newState)
   } else {
     // Member just disconnected
-    removeVoiceRole(newState.member, traceId)
+    removeVoiceRole(newState.member)
   }
 
   // A previous channel was left, potential cleanup necessary.
-  scheduleCleanup(oldState.channel, traceId)
+  scheduleCleanup(oldState.channel)
 }
 
-async function fetchEmptyVoiceChannel (voiceState, traceId) {
+async function assignEmptyVoiceChannel (voiceState) {
   // Check to see if connected to Lobby
   if (voiceState.channel.id !== VOICECHANNELS.LOBBY) return
 
@@ -80,13 +76,10 @@ async function fetchEmptyVoiceChannel (voiceState, traceId) {
   }
 
   try {
-    if (process.env.DEBUG) console.log(`VOICEMAGIC A 00 (ID: ${traceId})`)
     // Create new channel
     const channel = await voiceState.guild.channels.create(channelName, options)
-    if (process.env.DEBUG) console.log(`VOICEMAGIC A 01 (ID: ${traceId})`)
     // Move member into new channel
     await voiceState.setChannel(channel)
-    if (process.env.DEBUG) console.log(`VOICEMAGIC A 02 (ID: ${traceId})`)
   } catch (error) {
     console.error(error)
   }
@@ -101,7 +94,7 @@ async function assignVoiceRole (member) {
     .catch(console.error)
 }
 
-async function removeVoiceRole (member, traceId) {
+async function removeVoiceRole (member) {
   const memberVoiceRole = member.roles.cache.has(ROLES.VOICE)
   if (memberVoiceRole === undefined) { return }
   // Member still has voice role, remove
@@ -110,48 +103,41 @@ async function removeVoiceRole (member, traceId) {
     .catch(console.error)
 }
 
-function scheduleCleanup (voiceChannel, traceId) {
-  // Check to see if previous voice channel exists
-  // This could be the case if a member just joined VC while not being previously connected
-  if (!voiceChannel) return
-  // Check if channel is empty
-  if (voiceChannel.members.first()) return
-  const protectedChannels = [
-    makeshift.channels.voice.lobby,
-    makeshift.channels.voice.afk
+function scheduleCleanup (voiceChannel) {
+  // Check to see if previous voice channel exists. A voice channel not existing
+  // might be the case if the member just joined a voice channel after not being
+  // connected previously.
+  if (voiceChannel === undefined) { return }
+  // Check if channel is protected and as thus should not be deleted
+  const PROTECTED_CHANNELS = [
+    VOICECHANNELS.LOBBY,
+    VOICECHANNELS.AFK
   ]
+  for (const channel of PROTECTED_CHANNELS) {
+    if (voiceChannel.id === channel) { return }
+  }
+  // Check if channel is empty
+  if (voiceChannel.members.first() === undefined) { return }
 
-  // Check to see if channel is protected
-  var protectedChannel = false
-  protectedChannels.forEach(channel => {
-    if (voiceChannel.id === channel) protectedChannel = true
-  })
-  if (protectedChannel) return
-
-  if (process.env.DEBUG) console.log(`VOICEMAGIC D 00 (ID: ${traceId})`)
-
-  // Queue channel for deletion and wait 30s
+  // Channel needs to be deleted, queue for deletion after 30s
   setTimeout(cleanupVoiceChannel, 30e3)
 }
 
-const cleanupVoiceChannel = async function () {
+async function cleanupVoiceChannel (voiceChannel) {
   try {
-    voiceChannel.fetch()
-    if (process.env.DEBUG) console.log(`VOICEMAGIC D 01 (ID: ${traceId})`)
+    await voiceChannel.fetch()
     // Check if voice channel still exists
-    if (voiceChannel === undefined) return
-    // Lock voice channel
+    if (voiceChannel === undefined) { return }
+    // TODO: Lock voice channel
     // voiceChannel.
     // Check if there's no person in the channel
     if (voiceChannel.members.first()) {
-      // Someone connected in the mean time, unlock again
+      // TODO: Someone connected in the mean time, unlock again
       // voiceChannel.
       return
     }
-    if (process.env.DEBUG) console.log(`VOICEMAGIC D 02 (ID: ${traceId})`)
     // Delete channel
     await voiceChannel.delete()
-    if (process.env.DEBUG) console.log(`VOICEMAGIC D 03 (ID: ${traceId})`)
   } catch (error) {
     console.error(error)
   }
