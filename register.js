@@ -1,25 +1,15 @@
 import token from './src/resources/token.js'
 import { REST } from "@discordjs/rest"
 import { Routes } from 'discord-api-types/v9'
-import { SlashCommandBuilder } from '@discordjs/builders'
 
 const clientId = '303645054805737472'
 const guildId = '272036959348588555'
 
 
-// Register ping command
-const command = new SlashCommandBuilder()
+// Register eval command
+const command
 const commands = [command]
 command
-  .setName("ping")
-  .setDescription("Check to see if Nova is alive")
-  .setDefaultPermission(true)
-  .addBooleanOption(option => {
-    return option
-      .setRequired(false)
-      .setName("discrete")
-      .setDescription("Whether or not to respond privately")
-  })
 
 console.log(commands)
 

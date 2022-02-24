@@ -1,9 +1,21 @@
-import ping from "./ping.js"
+import evaluate from "./eval.js"
 
-export default function(interaction) {
-	const handler = getHandler(interaction.)
+let test = {
+	eval_command: new evaluate
 }
 
-function getHandler() {
-	
+export default function(interaction) {
+	if(interaction.isCommand() === false) { return }
+	const handler = getHandler(interaction.commandName)
+	handler.handle(interaction)
+
+}
+
+function getHandler(commandName) {
+	switch(commandName) {
+		case "eval":
+			return test.eval_command
+		default:
+			console.error(`Command not recognized: ${commandName}`)
+	}
 }

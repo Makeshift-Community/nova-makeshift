@@ -8,6 +8,7 @@
 		"node": "^16.9.0"
 	},
 	"scripts": {
+		"prepublish": "standard",
 		"test": "standard && node .",
 		"start": "node ."
 	},
