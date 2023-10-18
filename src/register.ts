@@ -1,6 +1,6 @@
 import TOKEN from "../token.js";
 import { REST, Routes } from "discord.js";
-import { GUILD_ID, BOTS } from "./resources/makeshift.js";
+import { GUILD_ID, BOTS } from "./resources/configuration.js";
 import commands from "./commands.js";
 const { NOVA_ID } = BOTS;
 

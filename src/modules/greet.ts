@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { GUILD_ID, TEXT_CHANNELS } from "../resources/makeshift.js";
+import { GUILD_ID, TEXT_CHANNELS } from "../resources/configuration.js";
 const GENERAL_CHANNEL_ID = TEXT_CHANNELS.GENERAL_ID;
 
 export default async function (member: GuildMember) {

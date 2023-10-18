@@ -2,7 +2,7 @@ import {
   GUILD_ID,
   VOICE_CHANNELS,
   CATEGORIES,
-} from "../resources/makeshift.js";
+} from "../resources/configuration.js";
 import {
   ChannelType,
   GuildChannelCreateOptions,

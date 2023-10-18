@@ -1,7 +1,7 @@
 // Dependencies
 import _ from "lodash";
 
-import { ROLES, GUILD_ID } from "../resources/makeshift.js";
+import { ROLES, GUILD_ID } from "../resources/configuration.js";
 import { GuildMember } from "discord.js";
 
 const COLOR_ROLES = ROLES.COLORS;
