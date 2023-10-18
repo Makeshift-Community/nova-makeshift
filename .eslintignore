@@ -1,0 +1,9 @@
+/dist/
+/.vscode/
+
+*.md
+*.markdown
+
+/package-lock.json
+
+.eslintrc.cjs

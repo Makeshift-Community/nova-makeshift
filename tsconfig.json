@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Node16",
+    "esModuleInterop": true,
+    "module": "Node16",
+    "rootDir": "src/",
+    "skipLibCheck": true,
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+
+    "outDir": "dist/",
+    "target": "ES2021"
+  }
+}
