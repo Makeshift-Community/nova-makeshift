@@ -1,14 +1,24 @@
-/*
-console.log("Running in development mode");
-export * from "./development.js";
-//*/
+export default interface Configuration {
+  GUILD_ID: string;
 
-//*
-if (process.env.NODE_ENV !== "production") {
-  console.error(
-    "Error: Application is configured for production but running in development mode. Exiting.",
-  );
-  process.exit(2);
+  CATEGORY_VOICE_ID: string;
+
+  TEXT_CHANNELS: {
+    GENERAL_ID: string;
+    MODLOGS_ID: string;
+  };
+
+  VOICE_CHANNELS: {
+    LOBBY_ID: string;
+    AFK_CHANNEL_ID: string;
+  };
+
+  COLORED_ROLES: Record<string, string>;
+
+  OWNER_USER_ID: string;
+
+  BOT_USERS: {
+    NOVA_ID: string;
+    OCTAVIA_ID: string;
+  };
 }
-export * from "./makeshift.js";
-//*/

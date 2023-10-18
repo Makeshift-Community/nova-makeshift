@@ -1,8 +1,4 @@
-import {
-  GUILD_ID,
-  VOICE_CHANNELS,
-  CATEGORIES,
-} from "../resources/configuration.js";
+import config from "../resources/configLoader.js";
 import {
   ChannelType,
   GuildChannelCreateOptions,
@@ -12,7 +8,7 @@ import {
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
-const CATEGORY_ID = CATEGORIES.VOICE_ID;
+const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = config;
 
 const channelNonces = new Map<string, number>();
 
@@ -35,7 +31,8 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   if (voiceState.channel?.id !== VOICE_CHANNELS.LOBBY_ID) return;
 
   const channelName = "Debug";
-  const voiceCategory = await voiceState.guild.channels.fetch(CATEGORY_ID);
+  const voiceCategory =
+    await voiceState.guild.channels.fetch(CATEGORY_VOICE_ID);
   if (voiceCategory === null) {
     console.error("Voice category not found");
     throw new Error("Voice category not found");

@@ -1,10 +1,10 @@
-// Dependencies
+// External dependencies
 import _ from "lodash";
-
-import { ROLES, GUILD_ID } from "../resources/configuration.js";
 import { GuildMember } from "discord.js";
 
-const COLOR_ROLES = ROLES.COLORS;
+// Internal dependencies
+import config from "../resources/configLoader.js";
+const { COLORED_ROLES, GUILD_ID } = config;
 
 export default async function (member: GuildMember) {
   // Check if member joined Makeshift guild
@@ -13,9 +13,9 @@ export default async function (member: GuildMember) {
   }
 
   const userId = BigInt(member.user.id);
-  const colorRoleCount = BigInt(_.size(COLOR_ROLES));
+  const colorRoleCount = BigInt(_.size(COLORED_ROLES));
   const colorRoleIndex = Number(userId % colorRoleCount);
 
-  const colorRole = _.values(COLOR_ROLES)[colorRoleIndex];
+  const colorRole = _.values(COLORED_ROLES)[colorRoleIndex];
   await member.roles.add(colorRole).catch(console.error);
 }

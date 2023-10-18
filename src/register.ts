@@ -1,8 +1,9 @@
 import TOKEN from "../token.js";
 import { REST, Routes } from "discord.js";
-import { GUILD_ID, BOTS } from "./resources/configuration.js";
+import config from "./resources/configLoader.js";
 import commands from "./commands.js";
-const { NOVA_ID } = BOTS;
+const { GUILD_ID, BOT_USERS } = config;
+const { NOVA_ID } = BOT_USERS;
 
 const builders = [];
 for (const command of commands) {
