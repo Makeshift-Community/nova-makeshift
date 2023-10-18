@@ -10,7 +10,6 @@
   "scripts": {
     "start": "node .",
     "lint": "npx prettier --write . && npx eslint . && npx --package=typescript tsc --noEmit",
-    "lint:check": "npx prettier --check . && npx eslint . && npx --package=typescript tsc --noEmit",
     "test": "npx --package=typescript tsc && npm start",
     "build": "npm run lint && npx --package=typescript tsc --build --clean && npx --package=typescript tsc"
   },
