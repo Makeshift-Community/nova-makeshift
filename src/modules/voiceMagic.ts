@@ -10,7 +10,7 @@ import {
   VoiceBasedChannel,
   VoiceState,
 } from "discord.js";
-import {setTimeout} from 'node:timers/promises'; 
+import { setTimeout } from "node:timers/promises";
 
 const CATEGORY_ID = CATEGORIES.VOICE_ID;
 
@@ -94,7 +94,9 @@ async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
   voiceChannel = await voiceChannel.fetch();
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (voiceChannel === null) {
-    console.error("This should never EVER be called. If it is, discord.js typings are incorrect.")
+    console.error(
+      "This should never EVER be called. If it is, discord.js typings are incorrect.",
+    );
     return;
   }
 
