@@ -60,25 +60,25 @@ async function handle(interaction: ChatInputCommandInteraction) {
   }
 }
 
-const createPromptOption = function(option : SlashCommandStringOption) {
+const createPromptOption = function (option: SlashCommandStringOption) {
   option
     .setRequired(true)
     .setName("prompt")
     .setDescription("The code to evaluate");
   return option;
-}
-const createDiscreteOption = function(option : SlashCommandBooleanOption) {
+};
+const createDiscreteOption = function (option: SlashCommandBooleanOption) {
   option
     .setRequired(false)
     .setName("discrete")
     .setDescription("Whether or not to respond privately");
   return option;
-}
+};
 const builder = new SlashCommandBuilder()
   .setName(name)
   .setDescription("Evaluate an expression for debugging purposes")
-  .addStringOption(option => createPromptOption(option))
-  .addBooleanOption(option => createDiscreteOption(option));
+  .addStringOption((option) => createPromptOption(option))
+  .addBooleanOption((option) => createDiscreteOption(option));
 
 export default {
   name,

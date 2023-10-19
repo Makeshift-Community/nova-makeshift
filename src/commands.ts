@@ -1,5 +1,5 @@
 import Command from "./Command.js";
 import test from "./commands/test.js";
-import eval from "./commands/eval.js";
+import evaluate from "./commands/evaluate.js";
 
-export default [test, eval] as Command[];
+export default [test, evaluate] as Command[];
