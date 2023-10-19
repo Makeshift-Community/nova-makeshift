@@ -76,7 +76,7 @@ async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
   }
 
   // Check if channel is empty now
-  if (voiceChannel.members.first() === undefined) {
+  if (voiceChannel.members.first() !== undefined) {
     return;
   }
 
@@ -88,12 +88,8 @@ async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
   await setTimeout(30e3);
 
   // Check if voice channel still exists
-  voiceChannel = await voiceChannel.fetch();
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (voiceChannel === null) {
-    console.error(
-      "This should never EVER be called. If it is, discord.js typings are incorrect.",
-    );
+  const channelExists = voiceChannel.guild.channels.cache.has(voiceChannel.id);
+  if(!channelExists) {
     return;
   }
 
