@@ -6,5 +6,5 @@ export default function (client: Client) {
 }
 
 const handle = async function (oldState: VoiceState, newState: VoiceState) {
-  await handleVoice(oldState, newState);
+  await handleVoice(oldState, newState).catch(console.error);
 };

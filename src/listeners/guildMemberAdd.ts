@@ -7,6 +7,6 @@ export default function (client: Client) {
 }
 
 const handle = async function (member: GuildMember) {
-  await handleGreet(member);
-  await handleInitialColor(member);
+  await handleGreet(member).catch(console.error);
+  await handleInitialColor(member).catch(console.error);
 };
