@@ -1,14 +1,20 @@
 import config from "../resources/configLoader.js";
 import {
+  CategoryChannel,
   ChannelType,
   GuildChannelCreateOptions,
   GuildChannelEditOptions,
   VoiceBasedChannel,
+  VoiceChannel,
   VoiceState,
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
 const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = config;
+const PROTECTED_CHANNELS = [
+  VOICE_CHANNELS.LOBBY_ID,
+  VOICE_CHANNELS.AFK_CHANNEL_ID,
+];
 
 const channelNonces = new Map<string, number>();
 
@@ -30,7 +36,6 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   // Check to see if connected to Lobby
   if (voiceState.channel?.id !== VOICE_CHANNELS.LOBBY_ID) return;
 
-  const channelName = "Debug";
   const voiceCategory =
     await voiceState.guild.channels.fetch(CATEGORY_VOICE_ID);
   if (voiceCategory === null) {
@@ -44,16 +49,40 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   // Fetch all channels in category
   await voiceCategory.fetch();
 
-  // Create new channel
-  const options: GuildChannelCreateOptions & { type: ChannelType.GuildVoice } =
-    {
-      name: channelName,
-      type: ChannelType.GuildVoice,
-      parent: voiceCategory,
-    };
-  const channel = await voiceState.guild.channels.create(options);
+
+  // Get empty voice channel
+  let channel = findEmptyVoiceChannel(voiceCategory);
+  if (channel === undefined) {
+    channel = await createVoiceChannel(voiceState, voiceCategory);
+  }
 
   await voiceState.setChannel(channel);
+}
+
+function findEmptyVoiceChannel(voiceCategory : CategoryChannel) : VoiceChannel | undefined {
+  const channels = voiceCategory.children.cache;
+  const voiceChannels = channels.filter((channel) : channel is VoiceChannel => {
+    return channel.type === ChannelType.GuildVoice;
+  });
+  const emptyVoiceChannels = voiceChannels.filter((channel) => {return !PROTECTED_CHANNELS.includes(channel.id)});
+  const emptyVoiceChannel = emptyVoiceChannels.find((channel) => {
+    return channel.members.size === 0;
+  });
+  return emptyVoiceChannel;
+}
+
+async function createVoiceChannel(voiceState : VoiceState, voiceCategory : CategoryChannel) : Promise<VoiceChannel> {
+  const channelName = "Debug";
+  const secondLastPosition = voiceCategory.children.cache.size - 2;
+  const options: GuildChannelCreateOptions & { type: ChannelType.GuildVoice } =
+  {
+    name: channelName,
+    type: ChannelType.GuildVoice,
+    parent: voiceCategory,
+    position: secondLastPosition,
+  };
+  const channel = await voiceState.guild.channels.create(options);
+  return channel;
 }
 
 async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
@@ -65,10 +94,6 @@ async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
   }
 
   // Check if channel is protected and as thus should not be deleted
-  const PROTECTED_CHANNELS = [
-    VOICE_CHANNELS.LOBBY_ID,
-    VOICE_CHANNELS.AFK_CHANNEL_ID,
-  ];
   for (const channel of PROTECTED_CHANNELS) {
     if (voiceChannel.id === channel) {
       return;
