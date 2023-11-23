@@ -1,4 +1,4 @@
-export default interface Configuration {
+export interface Configuration {
   GUILD_ID: string;
 
   CATEGORY_VOICE_ID: string;
@@ -22,3 +22,13 @@ export default interface Configuration {
     OCTAVIA_ID: string;
   };
 }
+
+let config: Configuration;
+if (process.env.NODE_ENV === "production") {
+  config = (await import("./makeshift.js")).default;
+} else {
+  console.log("Loaded configuration for development mode");
+  config = (await import("./development.js")).default;
+}
+
+export default config;

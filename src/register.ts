@@ -1,8 +1,8 @@
 import TOKEN from "../token.js";
 import { REST, Routes } from "discord.js";
-import config from "./resources/configLoader.js";
+import CONFIG from "./resources/configuration.js";
 import commands from "./commands.js";
-const { GUILD_ID, BOT_USERS } = config;
+const { GUILD_ID, BOT_USERS } = CONFIG;
 const { NOVA_ID } = BOT_USERS;
 
 const builders = [];

@@ -3,8 +3,8 @@ import _ from "lodash";
 import { GuildMember } from "discord.js";
 
 // Internal dependencies
-import config from "../resources/configLoader.js";
-const { COLORED_ROLES, GUILD_ID } = config;
+import CONFIG from "../resources/configuration.js";
+const { COLORED_ROLES, GUILD_ID } = CONFIG;
 
 export default async function (member: GuildMember) {
   // Check if member joined Makeshift guild

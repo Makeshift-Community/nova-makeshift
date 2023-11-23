@@ -1,4 +1,4 @@
-import config from "../resources/configLoader.js";
+import CONFIG from "../resources/configuration.js";
 import {
   CategoryChannel,
   ChannelType,
@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
-const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = config;
+const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = CONFIG;
 const PROTECTED_CHANNELS = [
   VOICE_CHANNELS.LOBBY_ID,
   VOICE_CHANNELS.AFK_CHANNEL_ID,

@@ -1,6 +1,6 @@
 import { GuildMember, TextChannel } from "discord.js";
-import config from "../resources/configLoader.js";
-const { GUILD_ID, TEXT_CHANNELS } = config;
+import CONFIG from "../resources/configuration.js";
+const { GUILD_ID, TEXT_CHANNELS } = CONFIG;
 const { MODLOGS_ID: GENERAL_CHANNEL_ID } = TEXT_CHANNELS;
 
 export default async function (member: GuildMember) {
