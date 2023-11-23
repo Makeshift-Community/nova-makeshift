@@ -8,8 +8,8 @@ import {
   SlashCommandBooleanOption,
   SlashCommandStringOption,
   codeBlock,
+  SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
 
 const name = "eval";
 
