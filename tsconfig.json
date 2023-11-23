@@ -1,15 +1,20 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Node16",
-    "esModuleInterop": true,
-    "module": "Node16",
+    // Input
     "rootDir": "src/",
-    "skipLibCheck": true,
 
-    "forceConsistentCasingInFileNames": true,
+    // Dependency resolution behavior
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "nodenext",
+
+    // Transpilation rules
     "strict": true,
 
-    "outDir": "dist/",
-    "target": "ES2021"
+    // Target
+    "target": "esnext",
+
+    // Output
+    "outDir": "dist/"
   }
 }
