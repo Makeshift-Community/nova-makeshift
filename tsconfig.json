@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    // Input
+    "rootDir": "src/",
+
+    // Dependency resolution behavior
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "nodenext",
+
+    // Transpilation rules
+    "strict": true,
+
+    // Target
+    "target": "esnext",
+
+    // Output
+    "outDir": "dist/"
+  }
+}
