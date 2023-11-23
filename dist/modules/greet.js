@@ -1,6 +1,7 @@
 import { TextChannel } from "discord.js";
-import { GUILD_ID, TEXT_CHANNELS } from "../resources/makeshift.js";
-const GENERAL_CHANNEL_ID = TEXT_CHANNELS.GENERAL_ID;
+import CONFIG from "../resources/configuration.js";
+const { GUILD_ID, TEXT_CHANNELS } = CONFIG;
+const { MODLOGS_ID: GENERAL_CHANNEL_ID } = TEXT_CHANNELS;
 export default async function (member) {
     // Check if member joined Makeshift guild
     const guild = member.guild;

@@ -5,6 +5,6 @@ export default function (client) {
     client.on(Events.GuildMemberAdd, handle);
 }
 const handle = async function (member) {
-    await handleGreet(member);
-    await handleInitialColor(member);
+    await handleGreet(member).catch(console.error);
+    await handleInitialColor(member).catch(console.error);
 };

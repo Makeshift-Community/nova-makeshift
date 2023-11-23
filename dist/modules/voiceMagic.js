@@ -1,7 +1,11 @@
-import { GUILD_ID, VOICE_CHANNELS, CATEGORIES, } from "../resources/makeshift.js";
+import CONFIG from "../resources/configuration.js";
 import { ChannelType, } from "discord.js";
 import { setTimeout } from "node:timers/promises";
-const CATEGORY_ID = CATEGORIES.VOICE_ID;
+const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = CONFIG;
+const PROTECTED_CHANNELS = [
+    VOICE_CHANNELS.LOBBY_ID,
+    VOICE_CHANNELS.AFK_CHANNEL_ID,
+];
 const channelNonces = new Map();
 export default async function (oldState, newState) {
     // Check if this happened on the Makeshift guild
@@ -19,8 +23,7 @@ async function assignEmptyVoiceChannel(voiceState) {
     // Check to see if connected to Lobby
     if (voiceState.channel?.id !== VOICE_CHANNELS.LOBBY_ID)
         return;
-    const channelName = "Debug";
-    const voiceCategory = await voiceState.guild.channels.fetch(CATEGORY_ID);
+    const voiceCategory = await voiceState.guild.channels.fetch(CATEGORY_VOICE_ID);
     if (voiceCategory === null) {
         console.error("Voice category not found");
         throw new Error("Voice category not found");
@@ -31,14 +34,37 @@ async function assignEmptyVoiceChannel(voiceState) {
     }
     // Fetch all channels in category
     await voiceCategory.fetch();
-    // Create new channel
+    // Get empty voice channel
+    let channel = findEmptyVoiceChannel(voiceCategory);
+    if (channel === undefined) {
+        channel = await createVoiceChannel(voiceState, voiceCategory);
+    }
+    await voiceState.setChannel(channel);
+}
+function findEmptyVoiceChannel(voiceCategory) {
+    const channels = voiceCategory.children.cache;
+    const voiceChannels = channels.filter((channel) => {
+        return channel.type === ChannelType.GuildVoice;
+    });
+    const emptyVoiceChannels = voiceChannels.filter((channel) => {
+        return !PROTECTED_CHANNELS.includes(channel.id);
+    });
+    const emptyVoiceChannel = emptyVoiceChannels.find((channel) => {
+        return channel.members.size === 0;
+    });
+    return emptyVoiceChannel;
+}
+async function createVoiceChannel(voiceState, voiceCategory) {
+    const channelName = "Debug";
+    const secondLastPosition = voiceCategory.children.cache.size - 2;
     const options = {
         name: channelName,
         type: ChannelType.GuildVoice,
         parent: voiceCategory,
+        position: secondLastPosition,
     };
     const channel = await voiceState.guild.channels.create(options);
-    await voiceState.setChannel(channel);
+    return channel;
 }
 async function cleanUp(voiceChannel) {
     // Check to see if previous voice channel exists. A voice channel not existing
@@ -48,17 +74,13 @@ async function cleanUp(voiceChannel) {
         return;
     }
     // Check if channel is protected and as thus should not be deleted
-    const PROTECTED_CHANNELS = [
-        VOICE_CHANNELS.LOBBY_ID,
-        VOICE_CHANNELS.AFK_CHANNEL_ID,
-    ];
     for (const channel of PROTECTED_CHANNELS) {
         if (voiceChannel.id === channel) {
             return;
         }
     }
     // Check if channel is empty now
-    if (voiceChannel.members.first() === undefined) {
+    if (voiceChannel.members.first() !== undefined) {
         return;
     }
     // Give channel a nonce
@@ -67,10 +89,8 @@ async function cleanUp(voiceChannel) {
     // Channel needs to be deleted, schedule for potential deletion in 30s
     await setTimeout(30e3);
     // Check if voice channel still exists
-    voiceChannel = await voiceChannel.fetch();
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (voiceChannel === null) {
-        console.error("This should never EVER be called. If it is, discord.js typings are incorrect.");
+    const channelExists = voiceChannel.guild.channels.cache.has(voiceChannel.id);
+    if (!channelExists) {
         return;
     }
     // Check if nonce still matches. This may not be the case if the channel was previously joined and left again.

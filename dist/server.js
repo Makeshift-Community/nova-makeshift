@@ -3,12 +3,18 @@ import { Client, GatewayIntentBits, Partials } from "discord.js";
 // Custom dependencies
 import token from "../token.js"; // I'm an idiot, thanks for the lesson
 import registerModules from "./listeners.js";
+// Display warning if we're in development mode
+if (process.env.NODE_ENV !== "production") {
+    console.log("Running in development mode");
+}
 const client = new Client({
     intents: [
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildPresences,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
     ],
     partials: [Partials.Channel, Partials.GuildMember],
 });

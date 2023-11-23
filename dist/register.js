@@ -1,8 +1,9 @@
 import TOKEN from "../token.js";
 import { REST, Routes } from "discord.js";
-import { GUILD_ID, BOTS } from "./resources/makeshift.js";
+import CONFIG from "./resources/configuration.js";
 import commands from "./commands.js";
-const { NOVA_ID } = BOTS;
+const { GUILD_ID, BOT_USERS } = CONFIG;
+const { NOVA_ID } = BOT_USERS;
 const builders = [];
 for (const command of commands) {
     builders.push(command.builder.toJSON());

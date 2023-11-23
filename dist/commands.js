@@ -1,3 +1,3 @@
 import test from "./commands/test.js";
-import eval from "./commands/eval.js";
-export default [test, eval];
+import evaluate from "./commands/evaluate.js";
+export default [test, evaluate];
