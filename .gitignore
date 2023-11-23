@@ -1,5 +1,8 @@
 # Secret stuff
-token.js
+/token.js
+
+# Debug files
+/debug/
 
 # Dependency directories
-node_modules/
+/node_modules/
