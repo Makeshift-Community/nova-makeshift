@@ -44,7 +44,7 @@ protection rights. Every user is entitled to the following:
 
 ### The right to access
 You have the right to request access to your personal data. Simply ask `NKN1396`
-for the `modlogs` role in order to acccess the `#modlogs` text channel on the
+for the `modlogs` role in order to access the `#modlogs` text channel on the
 community Discord guild.
 
 ### The right to rectification
@@ -95,7 +95,7 @@ We do not use cookies.
 ## Privacy policies of other websites
 The Makeshift community Discord guild and Warframe clan contain links to other
 websites. Our privacy policy applies only to our website, so if you click on a
-link to another website, you should read their pricacy policy.
+link to another website, you should read their privacy policy.
 
 ## Changes to our privacy policy
 Our community keeps its privacy policy under regular review and places any
