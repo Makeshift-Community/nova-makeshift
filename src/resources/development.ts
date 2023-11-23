@@ -1,4 +1,4 @@
-import { Configuration } from "./configuration.js"
+import { Configuration } from "./configuration.js";
 
 export default {
   GUILD_ID: "299298454457548801",

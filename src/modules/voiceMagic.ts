@@ -49,7 +49,6 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   // Fetch all channels in category
   await voiceCategory.fetch();
 
-
   // Get empty voice channel
   let channel = findEmptyVoiceChannel(voiceCategory);
   if (channel === undefined) {
@@ -59,28 +58,35 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   await voiceState.setChannel(channel);
 }
 
-function findEmptyVoiceChannel(voiceCategory : CategoryChannel) : VoiceChannel | undefined {
+function findEmptyVoiceChannel(
+  voiceCategory: CategoryChannel,
+): VoiceChannel | undefined {
   const channels = voiceCategory.children.cache;
-  const voiceChannels = channels.filter((channel) : channel is VoiceChannel => {
+  const voiceChannels = channels.filter((channel): channel is VoiceChannel => {
     return channel.type === ChannelType.GuildVoice;
   });
-  const emptyVoiceChannels = voiceChannels.filter((channel) => {return !PROTECTED_CHANNELS.includes(channel.id)});
+  const emptyVoiceChannels = voiceChannels.filter((channel) => {
+    return !PROTECTED_CHANNELS.includes(channel.id);
+  });
   const emptyVoiceChannel = emptyVoiceChannels.find((channel) => {
     return channel.members.size === 0;
   });
   return emptyVoiceChannel;
 }
 
-async function createVoiceChannel(voiceState : VoiceState, voiceCategory : CategoryChannel) : Promise<VoiceChannel> {
+async function createVoiceChannel(
+  voiceState: VoiceState,
+  voiceCategory: CategoryChannel,
+): Promise<VoiceChannel> {
   const channelName = "Debug";
   const secondLastPosition = voiceCategory.children.cache.size - 2;
   const options: GuildChannelCreateOptions & { type: ChannelType.GuildVoice } =
-  {
-    name: channelName,
-    type: ChannelType.GuildVoice,
-    parent: voiceCategory,
-    position: secondLastPosition,
-  };
+    {
+      name: channelName,
+      type: ChannelType.GuildVoice,
+      parent: voiceCategory,
+      position: secondLastPosition,
+    };
   const channel = await voiceState.guild.channels.create(options);
   return channel;
 }
@@ -114,7 +120,7 @@ async function cleanUp(voiceChannel: VoiceBasedChannel | null) {
 
   // Check if voice channel still exists
   const channelExists = voiceChannel.guild.channels.cache.has(voiceChannel.id);
-  if(!channelExists) {
+  if (!channelExists) {
     return;
   }
 
