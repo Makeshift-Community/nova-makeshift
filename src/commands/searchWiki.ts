@@ -28,7 +28,7 @@ interface WikiaOpensearchResponse {
 const name = "wiki";
 
 const searchTermStringOption = new SlashCommandStringOption()
-  .setRequired(false)
+  .setRequired(true)
   .setName("search")
   .setDescription("The term to search for");
 
@@ -42,12 +42,6 @@ async function handle(interaction: ChatInputCommandInteraction) {
     searchTermStringOption.name,
     searchTermStringOption.required,
   );
-
-  // No term provided, send link to wiki
-  if (!searchTerm) {
-    await interaction.reply("<https://warframe.fandom.com/wiki/WARFRAME_Wiki>");
-    return;
-  }
 
   // Defer
   await interaction.deferReply();
