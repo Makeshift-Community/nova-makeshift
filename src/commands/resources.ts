@@ -39,10 +39,6 @@ const redditSubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("reddit")
   .setDescription("Link to the official subreddit");
 
-const websiteSubcommandBuilder = new SlashCommandSubcommandBuilder()
-  .setName("website")
-  .setDescription("Link to the official website");
-
 const forumsSubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("forums")
   .setDescription("Link to the official forums");
@@ -61,7 +57,6 @@ const builder = new SlashCommandBuilder()
   .addSubcommand(wfcdSubcommandBuilder)
   .addSubcommand(discordSubcommandBuilder)
   .addSubcommand(redditSubcommandBuilder)
-  .addSubcommand(websiteSubcommandBuilder)
   .addSubcommand(forumsSubcommandBuilder)
   .addSubcommand(glyphSubcommandBuilder);
 
