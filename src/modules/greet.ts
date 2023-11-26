@@ -1,7 +1,7 @@
 import { GuildMember, TextChannel } from "discord.js";
 import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS } = CONFIG;
-const { MODLOGS_ID: GENERAL_CHANNEL_ID } = TEXT_CHANNELS;
+const { GENERAL_ID } = TEXT_CHANNELS;
 import { sample } from "lodash";
 
 const SUBJECTS = [
@@ -31,7 +31,7 @@ export default async function (member: GuildMember) {
 
   // Get general channel
   const channel = await guild.channels
-    .fetch(GENERAL_CHANNEL_ID)
+    .fetch(GENERAL_ID)
     .catch(console.error);
   // Sanity check
   if (!(channel instanceof TextChannel)) {
