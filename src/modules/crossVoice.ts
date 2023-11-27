@@ -54,7 +54,6 @@ export default function (message: Message) {
     channelId = channel.id;
   }
   if (channelId === ARCHIVE_CHANNEL_ID) {
-    console.log("threadToVoice");
     // Message was sent somewhere in the archive channel
     // Relay it to the corresponding voice channel
     relayMessageFromArchiveToVoiceChannel(message).catch(console.error);
@@ -63,19 +62,21 @@ export default function (message: Message) {
 
 async function relayMessageFromArchiveToVoiceChannel(message: Message) {
   // Step 1: Get the thread
-  const thread = message.thread;
   let voiceChannel;
-  if (thread === null) {
+  const channelType = message.channel.type;
+  if (channelType === ChannelType.PublicThread) {
+    // Message was sent in a thread
+    // Send to the registered corresponding voice channel
+    voiceChannel = channelsByThreadId.get(message.channel.id);
+  } else {
     // Message was sent in root channel
+    // Send to the channel the user is currently in
     const member = message.member as GuildMember;
     voiceChannel = member.voice.channel as VoiceChannel;
-  } else {
-    // Message was sent in a thread
-    voiceChannel = channelsByThreadId.get(thread.id);
   }
   if (!voiceChannel) {
-    // Member is not in a voice channel
-    // Nothing to relay
+    // No voice channel to relay to
+    // This only happens if the bot is restarted while a thread is active
     return;
   }
 
