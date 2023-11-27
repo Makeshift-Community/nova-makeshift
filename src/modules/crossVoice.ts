@@ -95,19 +95,6 @@ async function relayMessageFromVoiceChannelToLegacyThread(message : Message) {
     channelsByThreadId.set(thread.id, channel);
   }
 
-  // Step 2.5: Send a message to the thread
-  const startMessage = new EmbedBuilder()
-    .addFields([
-      {
-        name: "Date created",
-        value: ,
-      },
-    ])
-  await thread.send({ embeds: [startMessage] })
-    .catch(() => {
-      console.error("Failed to send start message");
-    });
-
   // Step 3: Get the webhook
   const webhook = await getWebhook(legacyVoiceChannel);
 
