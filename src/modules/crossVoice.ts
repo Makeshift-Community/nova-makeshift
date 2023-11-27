@@ -1,9 +1,17 @@
-import CONFIG from "../resources/configuration.js"
+import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS, WEBHOOKS } = CONFIG;
 const { LEGACY_VOICE_CHANNEL_ID: ARCHIVE_CHANNEL_ID } = TEXT_CHANNELS;
 const { LEGACY_VOICE_WEBHOOK_ID } = WEBHOOKS;
 
-import { Message, ChannelType, ThreadChannel, ThreadAutoArchiveDuration, VoiceChannel, GuildMember, Guild, TextChannel, } from "discord.js";
+import {
+  Message,
+  ChannelType,
+  ThreadChannel,
+  ThreadAutoArchiveDuration,
+  VoiceChannel,
+  GuildMember,
+  TextChannel,
+} from "discord.js";
 
 const threadsByChannelId = new Map<string, ThreadChannel>();
 const channelsByThreadId = new Map<string, VoiceChannel>();
@@ -17,12 +25,12 @@ export default function (message: Message) {
   }
 
   // Check if message was sent by a user
-  if(message.webhookId) {
+  if (message.webhookId) {
     // Message was sent by a webhook
     // This is probably a relayed message
     return;
   }
-  if(message.author.bot) {
+  if (message.author.bot) {
     // Message was sent by a bot
     // This happens when a bot creates a thread
     return;
@@ -30,45 +38,42 @@ export default function (message: Message) {
 
   // Check if message was sent in a voice channel
   const channel = message.channel;
-  if(channel.type === ChannelType.GuildVoice) {
+  if (channel.type === ChannelType.GuildVoice) {
     // Message was sent in a voice channel
     // Relay it to the corresponding archive channel thread
-    relayMessageFromVoiceChannelToArchiveThread(message)
-      .catch(console.error);
+    relayMessageFromVoiceChannelToArchiveThread(message).catch(console.error);
   }
 
   // Check if message was sent somewhere in the archive channel
   let channelId;
-  if(channel.type === ChannelType.PublicThread) {
+  if (channel.type === ChannelType.PublicThread) {
     // Message was sent in a thread
     channelId = channel.parent?.id;
   } else {
     // Message was sent in the root channel
     channelId = channel.id;
   }
-  if(channelId === ARCHIVE_CHANNEL_ID) {
-    console.log("threadToVoice")
+  if (channelId === ARCHIVE_CHANNEL_ID) {
+    console.log("threadToVoice");
     // Message was sent somewhere in the archive channel
     // Relay it to the corresponding voice channel
-    relayMessageFromArchiveToVoiceChannel(message)
-      .catch(console.error);
+    relayMessageFromArchiveToVoiceChannel(message).catch(console.error);
   }
 }
 
-async function relayMessageFromArchiveToVoiceChannel(message : Message) {
+async function relayMessageFromArchiveToVoiceChannel(message: Message) {
   // Step 1: Get the thread
   const thread = message.thread;
   let voiceChannel;
-  if(thread === null) {
+  if (thread === null) {
     // Message was sent in root channel
     const member = message.member as GuildMember;
     voiceChannel = member.voice.channel as VoiceChannel;
-  }
-  else {
+  } else {
     // Message was sent in a thread
     voiceChannel = channelsByThreadId.get(thread.id);
   }
-  if(!voiceChannel) {
+  if (!voiceChannel) {
     // Member is not in a voice channel
     // Nothing to relay
     return;
@@ -84,7 +89,7 @@ async function relayMessageFromArchiveToVoiceChannel(message : Message) {
   });
 }
 
-async function relayMessageFromVoiceChannelToArchiveThread(message : Message) {
+async function relayMessageFromVoiceChannelToArchiveThread(message: Message) {
   // Step 1: Get the archive channel
   const channel = message.channel as VoiceChannel;
   const guild = channel.guild;
@@ -103,7 +108,7 @@ async function relayMessageFromVoiceChannelToArchiveThread(message : Message) {
   let thread = threadsByChannelId.get(channel.id);
   const channelId = channel.id;
   const date = new Date().toISOString();
-  if(!thread) {
+  if (!thread) {
     // Create the thread
     thread = await archiveChannel.threads.create({
       name: `Archive of ${channelId} @${date}`,

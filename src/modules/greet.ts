@@ -21,7 +21,6 @@ const SUBJECTS = [
   "Discord emoji",
   "Pokémon",
   "TheFatRat song",
-
 ];
 
 export default async function (member: GuildMember) {
@@ -43,6 +42,8 @@ export default async function (member: GuildMember) {
 
   // Send welcome message
   channel
-    .send(`Welcome to the Makeshift community Discord, ${member.toString()}. State your favorite ${subject}, NOW!`)
+    .send(
+      `Welcome to the Makeshift community Discord, ${member.toString()}. State your favorite ${subject}, NOW!`,
+    )
     .catch(console.error);
 }

@@ -6,7 +6,7 @@ export interface Configuration {
   TEXT_CHANNELS: {
     GENERAL_CHANNEL_ID: string;
     MODLOGS_CHANNEL_ID: string;
-    LEGACY_VOICE_CHANNEL_ID : string;
+    LEGACY_VOICE_CHANNEL_ID: string;
   };
 
   VOICE_CHANNELS: {
