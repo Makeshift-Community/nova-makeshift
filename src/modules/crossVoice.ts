@@ -88,7 +88,16 @@ async function relayMessageFromVoiceChannelToArchiveThread(message : Message) {
   // Step 1: Get the archive channel
   const channel = message.channel as VoiceChannel;
   const guild = channel.guild;
-  const archiveChannel = await getArchiveChannel(guild);
+  const channels = guild.channels;
+  const archiveChannel = await channels.fetch(ARCHIVE_CHANNEL_ID);
+  if (!archiveChannel) {
+    // Probably failed to fetch the channel
+    throw new Error("Archive channel not found");
+  }
+  if (archiveChannel.type !== ChannelType.GuildText) {
+    // If this ever happens, ARCHIVE_CHANNEL_ID was misconfigured or Discord now allows text channels to be converted to voice channels
+    throw new Error("Archive channel is not a text channel");
+  }
 
   // Step 2: Get the thread
   let thread = threadsByChannelId.get(channel.id);
@@ -115,20 +124,6 @@ async function relayMessageFromVoiceChannelToArchiveThread(message : Message) {
     avatarURL: member.user.avatarURL() ?? undefined,
     threadId: thread.id,
   });
-}
-
-async function getArchiveChannel(guild: Guild) {
-  const channels = guild.channels;
-  const archiveChannel = await channels.fetch(ARCHIVE_CHANNEL_ID);
-  if (!archiveChannel) {
-    // Probably failed to fetch the channel
-    throw new Error("Archive channel not found");
-  }
-  if (archiveChannel.type !== ChannelType.GuildText) {
-    // If this ever happens, ARCHIVE_CHANNEL_ID was misconfigured or Discord now allows text channels to be converted to voice channels
-    throw new Error("Archive channel is not a text channel");
-  }
-  return archiveChannel;
 }
 
 async function getWebhook(channel: VoiceChannel | TextChannel) {
