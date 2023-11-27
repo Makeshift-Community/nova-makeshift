@@ -10,9 +10,9 @@ import {
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
-const { GUILD_ID, VOICE_CHANNELS, CATEGORY_VOICE_ID } = CONFIG;
+const { GUILD_ID, VOICE_CHANNELS, VOICE_CATEGORY_ID } = CONFIG;
 const PROTECTED_CHANNELS = [
-  VOICE_CHANNELS.LOBBY_ID,
+  VOICE_CHANNELS.LOBBY_CHANNEL_ID,
   VOICE_CHANNELS.AFK_CHANNEL_ID,
 ];
 
@@ -34,10 +34,10 @@ export default async function (oldState: VoiceState, newState: VoiceState) {
 
 async function assignEmptyVoiceChannel(voiceState: VoiceState) {
   // Check to see if connected to Lobby
-  if (voiceState.channel?.id !== VOICE_CHANNELS.LOBBY_ID) return;
+  if (voiceState.channel?.id !== VOICE_CHANNELS.LOBBY_CHANNEL_ID) return;
 
   const voiceCategory =
-    await voiceState.guild.channels.fetch(CATEGORY_VOICE_ID);
+    await voiceState.guild.channels.fetch(VOICE_CATEGORY_ID);
   if (voiceCategory === null) {
     console.error("Voice category not found");
     throw new Error("Voice category not found");

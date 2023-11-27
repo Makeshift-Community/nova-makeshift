@@ -1,5 +1,14 @@
 import Command from "./Command.js";
-import test from "./commands/test.js";
-import evaluate from "./commands/evaluate.js";
+import testCommand from "./commands/test.js";
+import evaluateCommand from "./commands/evaluate.js";
+import searchWikiCommand from "./commands/searchWiki.js";
+import resourcesCommand from "./commands/resources.js";
+import rulesCommand from "./commands/rules.js";
 
-export default [test, evaluate] as Command[];
+export default [
+  testCommand,
+  evaluateCommand,
+  searchWikiCommand,
+  resourcesCommand,
+  rulesCommand,
+] as Command[];

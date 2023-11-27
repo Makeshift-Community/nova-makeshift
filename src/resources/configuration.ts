@@ -1,15 +1,16 @@
 export interface Configuration {
   GUILD_ID: string;
 
-  CATEGORY_VOICE_ID: string;
+  VOICE_CATEGORY_ID: string;
 
   TEXT_CHANNELS: {
-    GENERAL_ID: string;
-    MODLOGS_ID: string;
+    GENERAL_CHANNEL_ID: string;
+    MODLOGS_CHANNEL_ID: string;
+    LEGACY_VOICE_CHANNEL_ID: string;
   };
 
   VOICE_CHANNELS: {
-    LOBBY_ID: string;
+    LOBBY_CHANNEL_ID: string;
     AFK_CHANNEL_ID: string;
   };
 
@@ -18,8 +19,12 @@ export interface Configuration {
   OWNER_USER_ID: string;
 
   BOT_USERS: {
-    NOVA_ID: string;
-    OCTAVIA_ID: string;
+    NOVA_USER_ID: string;
+    OCTAVIA_USER_ID: string;
+  };
+
+  WEBHOOKS: {
+    LEGACY_VOICE_WEBHOOK_ID: string;
   };
 }
 
