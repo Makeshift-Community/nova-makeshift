@@ -1,4 +1,3 @@
-import axios from "axios";
 import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS, WEBHOOKS } = CONFIG;
 const { LEGACY_VOICE_CHANNEL_ID: ARCHIVE_CHANNEL_ID } = TEXT_CHANNELS;
@@ -13,9 +12,7 @@ import {
   GuildMember,
   TextChannel,
   AttachmentBuilder,
-  AttachmentData,
   Webhook,
-  Attachment,
 } from "discord.js";
 
 const threadsByChannelId = new Map<string, ThreadChannel>();
@@ -128,23 +125,13 @@ async function relayMessageFromVoiceChannelToArchiveThread(message: Message) {
   await sendWebhookMessage(webhook, message, thread);
 }
 
-async function downloadAttachment(attachment: Attachment): Promise<AttachmentBuilder> { // Replace AttachmentType with the actual type of your attachment
-  const response = await axios.get<ArrayBuffer>(attachment.url, {
-    responseType: 'arraybuffer'
-  });
-  const buffer = Buffer.from(response.data);
-  const attachmentData: AttachmentData = {
-    name: attachment.name
-  };
-  return new AttachmentBuilder(buffer, attachmentData);
-}
-
 async function sendWebhookMessage(webhook : Webhook, message: Message, thread?: ThreadChannel) {
   const member = message.member as GuildMember;
-  // Download files with axios
-  const files = await Promise.all(
-    message.attachments.map(attachment => downloadAttachment(attachment))
-  );
+  const files = message.attachments.map((attachment) => {
+    const attachmentBuilder = new AttachmentBuilder(attachment.url);
+    attachmentBuilder.setName(attachment.name);
+    return attachmentBuilder;
+  });
 
   // Send the message
   await webhook.send({
