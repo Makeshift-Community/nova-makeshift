@@ -2,7 +2,7 @@ import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS, WEBHOOKS } = CONFIG;
 const { LEGACY_VOICE_CHANNEL_ID: ARCHIVE_CHANNEL_ID } = TEXT_CHANNELS;
 const { LEGACY_VOICE_WEBHOOK_ID } = WEBHOOKS;
-import { ChannelType, ThreadAutoArchiveDuration, } from "discord.js";
+import { ChannelType, ThreadAutoArchiveDuration, AttachmentBuilder, } from "discord.js";
 const threadsByChannelId = new Map();
 const channelsByThreadId = new Map();
 export default function (message) {
@@ -68,12 +68,8 @@ async function relayMessageFromArchiveToVoiceChannel(message) {
     }
     // Step 2: Get the webhook
     const webhook = await getWebhook(voiceChannel);
-    const member = message.member;
-    await webhook.send({
-        content: message.content,
-        username: member.displayName,
-        avatarURL: member.user.avatarURL() ?? undefined,
-    });
+    // Step 3: Relay the message
+    await sendWebhookMessage(webhook, message);
 }
 async function relayMessageFromVoiceChannelToArchiveThread(message) {
     // Step 1: Get the archive channel
@@ -105,12 +101,22 @@ async function relayMessageFromVoiceChannelToArchiveThread(message) {
     // Step 3: Get the webhook
     const webhook = await getWebhook(archiveChannel);
     // Step 4: Relay the message
+    await sendWebhookMessage(webhook, message, thread);
+}
+async function sendWebhookMessage(webhook, message, thread) {
     const member = message.member;
+    const files = message.attachments.map((attachment) => {
+        const attachmentBuilder = new AttachmentBuilder(attachment.url);
+        attachmentBuilder.setName(attachment.name);
+        return attachmentBuilder;
+    });
+    // Send the message
     await webhook.send({
         content: message.content,
         username: member.displayName,
         avatarURL: member.user.avatarURL() ?? undefined,
-        threadId: thread.id,
+        files,
+        threadId: thread?.id,
     });
 }
 async function getWebhook(channel) {
