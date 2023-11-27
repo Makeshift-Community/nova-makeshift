@@ -1,3 +1,4 @@
+import axios from "axios";
 import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS, WEBHOOKS } = CONFIG;
 const { LEGACY_VOICE_CHANNEL_ID: ARCHIVE_CHANNEL_ID } = TEXT_CHANNELS;
@@ -11,6 +12,10 @@ import {
   VoiceChannel,
   GuildMember,
   TextChannel,
+  AttachmentBuilder,
+  AttachmentData,
+  Webhook,
+  Attachment,
 } from "discord.js";
 
 const threadsByChannelId = new Map<string, ThreadChannel>();
@@ -82,12 +87,9 @@ async function relayMessageFromArchiveToVoiceChannel(message: Message) {
 
   // Step 2: Get the webhook
   const webhook = await getWebhook(voiceChannel);
-  const member = message.member as GuildMember;
-  await webhook.send({
-    content: message.content,
-    username: member.displayName,
-    avatarURL: member.user.avatarURL() ?? undefined,
-  });
+
+  // Step 3: Relay the message
+  await sendWebhookMessage(webhook, message);
 }
 
 async function relayMessageFromVoiceChannelToArchiveThread(message: Message) {
@@ -123,12 +125,34 @@ async function relayMessageFromVoiceChannelToArchiveThread(message: Message) {
   const webhook = await getWebhook(archiveChannel);
 
   // Step 4: Relay the message
+  await sendWebhookMessage(webhook, message, thread);
+}
+
+async function downloadAttachment(attachment: Attachment): Promise<AttachmentBuilder> { // Replace AttachmentType with the actual type of your attachment
+  const response = await axios.get<ArrayBuffer>(attachment.url, {
+    responseType: 'arraybuffer'
+  });
+  const buffer = Buffer.from(response.data);
+  const attachmentData: AttachmentData = {
+    name: attachment.name
+  };
+  return new AttachmentBuilder(buffer, attachmentData);
+}
+
+async function sendWebhookMessage(webhook : Webhook, message: Message, thread?: ThreadChannel) {
   const member = message.member as GuildMember;
+  // Download files with axios
+  const files = await Promise.all(
+    message.attachments.map(attachment => downloadAttachment(attachment))
+  );
+
+  // Send the message
   await webhook.send({
     content: message.content,
     username: member.displayName,
     avatarURL: member.user.avatarURL() ?? undefined,
-    threadId: thread.id,
+    files,
+    threadId: thread?.id,
   });
 }
 
