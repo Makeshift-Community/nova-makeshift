@@ -2,7 +2,7 @@ import { GuildMember, TextChannel } from "discord.js";
 import CONFIG from "../resources/configuration.js";
 const { GUILD_ID, TEXT_CHANNELS } = CONFIG;
 const { GENERAL_CHANNEL_ID } = TEXT_CHANNELS;
-import { sample } from "lodash";
+import _ from "lodash";
 
 const SUBJECTS = [
   "Ryan Gosling movie",
@@ -39,7 +39,7 @@ export default async function (member: GuildMember) {
     return;
   }
 
-  const subject = sample(SUBJECTS);
+  const subject = _.sample(SUBJECTS);
 
   // Send welcome message
   channel
