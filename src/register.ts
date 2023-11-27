@@ -23,13 +23,15 @@ if (process.env.NODE_ENV === "production") {
 
 console.log("Started refreshing application (/) commands.");
 
-/*
-await rest.put(route, { body: [] }).catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
-//*/
+// Clear old commands
+if(process.env.NODE_ENV === "production") {
+  await rest.put(route, { body: [] }).catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
 
+// Set new commands
 await rest.put(route, { body: builders }).catch((error) => {
   console.error(error);
   process.exit(1);
