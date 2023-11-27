@@ -6,6 +6,7 @@ export interface Configuration {
   TEXT_CHANNELS: {
     GENERAL_CHANNEL_ID: string;
     MODLOGS_CHANNEL_ID: string;
+    LEGACY_VOICE_CHANNEL_ID : string;
   };
 
   VOICE_CHANNELS: {
@@ -20,6 +21,10 @@ export interface Configuration {
   BOT_USERS: {
     NOVA_USER_ID: string;
     OCTAVIA_USER_ID: string;
+  };
+
+  WEBHOOKS: {
+    LEGACY_VOICE_WEBHOOK_ID: string;
   };
 }
 
