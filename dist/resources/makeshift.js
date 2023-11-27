@@ -28,6 +28,6 @@ export default {
         OCTAVIA_USER_ID: "435118272510427167",
     },
     WEBHOOKS: {
-        LEGACY_VOICE_WEBHOOK_ID: "",
+        LEGACY_VOICE_WEBHOOK_ID: "1178783030207324341",
     },
 };
