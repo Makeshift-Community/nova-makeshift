@@ -1,14 +1,12 @@
 import Command from "./Command.js";
-import testCommand from "./commands/test.js";
-import evaluateCommand from "./commands/evaluate.js";
-import searchWikiCommand from "./commands/searchWiki.js";
-import resourcesCommand from "./commands/resources.js";
+import evaluateJavascriptCommand from "./commands/evaluateJavascript.js";
+import searchWarframeWikiCommand from "./commands/searchWarframeWiki.js";
+import linkWarframeResources from "./commands/linkWarframeResources.js";
 import rulesCommand from "./commands/rules.js";
 
 export default [
-  testCommand,
-  evaluateCommand,
-  searchWikiCommand,
-  resourcesCommand,
+  evaluateJavascriptCommand,
+  searchWarframeWikiCommand,
+  linkWarframeResources,
   rulesCommand,
 ] as Command[];
