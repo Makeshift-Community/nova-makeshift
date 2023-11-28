@@ -38,7 +38,9 @@ export default async function (message: Message) {
   if (channel.type === ChannelType.GuildVoice) {
     // Message was sent in a voice channel
     // Relay it to the corresponding archive channel thread
-    await relayMessageFromVoiceChannelToArchiveThread(message).catch(console.error);
+    await relayMessageFromVoiceChannelToArchiveThread(message).catch(
+      console.error,
+    );
   }
 
   // Check if message was sent in the root archive channel
@@ -53,7 +55,7 @@ async function relayMessageFromArchiveToVoiceChannel(message: Message) {
   // Step 1: Get the voice channel
   const member = message.member as GuildMember;
   const targetChannel = member.voice.channel;
-  if(!targetChannel) {
+  if (!targetChannel) {
     // Member is not in a voice channel
     return;
   }
