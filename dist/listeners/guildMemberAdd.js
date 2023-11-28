@@ -1,10 +1,10 @@
-import handleGreet from "../modules/greet.js";
-import handleInitialColor from "../modules/assignColor.js";
+import handleGreetOnJoin from "../modules/greetOnJoin.js";
+import handleAssignColorOnJoin from "../modules/assignColorOnJoin.js";
 import { Events } from "discord.js";
 export default function (client) {
     client.on(Events.GuildMemberAdd, handle);
 }
 const handle = async function (member) {
-    await handleGreet(member).catch(console.error);
-    await handleInitialColor(member).catch(console.error);
+    await handleGreetOnJoin(member).catch(console.error);
+    await handleAssignColorOnJoin(member).catch(console.error);
 };
