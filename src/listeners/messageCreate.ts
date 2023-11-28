@@ -1,4 +1,4 @@
-import handleSarcasm from "../modules/sarcasm.js";
+import handleSarcasm from "../modules/sarcasmDisclaimer.js";
 import handle8ball from "../modules/8ball.js";
 import handleSoon from "../modules/soon.js";
 import handleLegacyVoice from "../modules/crossVoice.js";

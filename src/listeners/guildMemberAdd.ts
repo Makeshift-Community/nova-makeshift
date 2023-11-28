@@ -1,5 +1,5 @@
-import handleGreet from "../modules/greet.js";
-import handleInitialColor from "../modules/assignColor.js";
+import handleGreetOnJoin from "../modules/greetOnJoin.js";
+import handleAssignColorOnJoin from "../modules/assignColorOnJoin.js";
 import { Client, Events, GuildMember } from "discord.js";
 
 export default function (client: Client) {
@@ -7,6 +7,6 @@ export default function (client: Client) {
 }
 
 const handle = async function (member: GuildMember) {
-  await handleGreet(member).catch(console.error);
-  await handleInitialColor(member).catch(console.error);
+  await handleGreetOnJoin(member).catch(console.error);
+  await handleAssignColorOnJoin(member).catch(console.error);
 };
