@@ -24,7 +24,7 @@ const channelNonces = new Map<string, number>();
  * Assigns potential empty channel and voice role to the member.
  * Revokes the voice role from the member.
  * Cleans up the previous voice channel if it was left empty.
- * 
+ *
  * @param oldState - The previous state of the member's voice connection.
  * @param newState - The new state of the member's voice connection.
  */
@@ -44,14 +44,14 @@ export default async function (oldState: VoiceState, newState: VoiceState) {
   }
 
   // Assign or revoke voice role
-  if(newState.channel === null) {
+  if (newState.channel === null) {
     // Member left voice channel, revoke voice role
     await revokeVoiceRole(newState);
   } else {
     // Member joined voice channel, assign voice role
     await assignVoiceRole(newState);
   }
-  
+
   // Check to see if previous voice channel exists. A voice channel not existing
   // might be the case if the member just joined a voice channel after not being
   // connected previously.
@@ -65,7 +65,7 @@ export default async function (oldState: VoiceState, newState: VoiceState) {
  * If the member is not connected to any voice channel, no action is taken.
  * If the voice role does not exist, an error is thrown.
  * If the member already has the voice role assigned, no action is taken.
- * 
+ *
  * @param voiceState - The voice state of the member.
  * @throws Error - If the voice role is not found or the member is not cached.
  */
@@ -73,19 +73,19 @@ async function assignVoiceRole(voiceState: VoiceState) {
   // Connected to voice channel
   // Check to see if voice role already exists
   const voiceRole = await voiceState.guild.roles.fetch(VOICE_ROLE_ID);
-  if(voiceRole === null) {
+  if (voiceRole === null) {
     console.error("Voice role not found");
     throw new Error("Voice role not found");
-  };
+  }
   const member = voiceState.member;
-  if(member === null) {
+  if (member === null) {
     console.error("Member not cached");
     throw new Error("Member not cached");
   }
-  if(member.roles.cache.has(voiceRole.id)) {
+  if (member.roles.cache.has(voiceRole.id)) {
     // Voice role already assigned
     return;
-  };
+  }
 
   // Voice role not assigned yet, assign it
   await member.roles.add(voiceRole);
@@ -102,19 +102,19 @@ async function revokeVoiceRole(voiceState: VoiceState) {
   // Not connected to voice channel
   // Check to see if voice role already exists
   const voiceRole = await voiceState.guild.roles.fetch(VOICE_ROLE_ID);
-  if(voiceRole === null) {
+  if (voiceRole === null) {
     console.error("Voice role not found");
     throw new Error("Voice role not found");
-  };
+  }
   const member = voiceState.member;
-  if(member === null) {
+  if (member === null) {
     console.error("Member not cached");
     throw new Error("Member not cached");
   }
-  if(!member.roles.cache.has(voiceRole.id)) {
+  if (!member.roles.cache.has(voiceRole.id)) {
     // Voice role already revoked
     return;
-  };
+  }
 
   // Voice role not revoked yet, revoke it
   await member.roles.remove(voiceRole);
@@ -213,7 +213,8 @@ async function cleanUp(previousVoiceChannel: VoiceBasedChannel) {
   await setTimeout(60e3);
 
   // Check if voice channel still exists
-  const channelExists = previousVoiceChannel.guild.channels.cache.has(channelId);
+  const channelExists =
+    previousVoiceChannel.guild.channels.cache.has(channelId);
   if (!channelExists) return;
 
   // Check if nonce still matches. This may not be the case if the channel was previously joined and left again.

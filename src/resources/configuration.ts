@@ -12,7 +12,7 @@ export interface Configuration {
   };
   ROLES: {
     VOICE_ROLE_ID: string;
-  }
+  };
   COLORED_ROLES: Record<string, string>;
   OWNER_USER_ID: string;
   BOT_USERS: {
