@@ -1,6 +1,6 @@
 import handleSarcasm from "../modules/sarcasmDisclaimer.js";
 import handle8ball from "../modules/8ball.js";
-import handleSoon from "../modules/soon.js";
+import handleSoon from "../modules/reactToMessagesEndingWithSoon.js";
 import handleLegacyVoice from "../modules/crossPostVoiceChannelMessages.js";
 import { Client, Events, Message } from "discord.js";
 
