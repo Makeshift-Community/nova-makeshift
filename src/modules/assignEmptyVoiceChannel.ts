@@ -1,14 +1,16 @@
 import CONFIG from "../resources/configuration.js";
-const { GUILD_ID, VOICE_CHANNELS, VOICE_CATEGORY_ID, ROLES } = CONFIG;
+const { GUILD_ID, VOICE_CHANNELS, VOICE_CATEGORY_ID, ROLES, SETTINGS } = CONFIG;
 const PROTECTED_CHANNEL_IDS = [
   VOICE_CHANNELS.LOBBY_CHANNEL_ID,
   VOICE_CHANNELS.AFK_CHANNEL_ID,
 ];
 const { VOICE_ROLE_ID } = ROLES;
+const { VOICE_CHANNEL_DELETION_TIMEOUT } = SETTINGS;
 
 import {
   CategoryChannel,
   ChannelType,
+  Collection,
   GuildChannelCreateOptions,
   GuildChannelEditOptions,
   VoiceBasedChannel,
@@ -16,8 +18,66 @@ import {
   VoiceState,
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
+import _ from "lodash";
 
-const channelNonces = new Map<string, number>();
+const channelExpirationTimestamps = new Map<string, number>();
+
+const CHANNEL_NAMES = [
+  "Ash",
+  "Atlas",
+  "Banshee",
+  "Baruuk",
+  "Caliban",
+  "Chroma",
+  "Citrine",
+  "Dagath",
+  "Ember",
+  "Equinox",
+  "Excalibur",
+  "Frost",
+  "Gara",
+  "Garuda",
+  "Gauss",
+  "Grendel",
+  "Gyre",
+  "Harrow",
+  "Hildryn",
+  "Hydroid",
+  "Inaros",
+  "Ivara",
+  "Khora",
+  "Kullervo",
+  "Lavos",
+  "Limbo",
+  "Loki",
+  "Mag",
+  "Mesa",
+  "Mirage",
+  "Nekros",
+  "Nezha",
+  "Nidus",
+  "Nova",
+  "Nyx",
+  "Oberon",
+  "Octavia",
+  "Protea",
+  "Revenant",
+  "Rhino",
+  "Saryn",
+  "Sevagoth",
+  "Styanax",
+  "Titania",
+  "Trinity",
+  "Valkyr",
+  "Vauban",
+  "Volt",
+  "Voruna",
+  "Wisp",
+  "Wukong",
+  "Xaku",
+  "Yareli",
+  "Zephyr",
+];
 
 /**
  * Handles the event when a member's voice channel changes in the Makeshift guild.
@@ -30,34 +90,32 @@ const channelNonces = new Map<string, number>();
  */
 export default async function (oldState: VoiceState, newState: VoiceState) {
   // Check if this happened on the Makeshift guild
-  if (newState.guild.id !== GUILD_ID) return;
+  const guild = newState.guild;
+  if (guild.id !== GUILD_ID) return;
 
   // Make sure member voice channel changed
+  // Otherwise, we don't need to do anything
   const currentVoiceChannel = newState.channel;
   const previousVoiceChannel = oldState.channel;
   if (currentVoiceChannel?.id === previousVoiceChannel?.id) return;
 
-  // Member has changed voice channel, assign potential empty channel
-  if (currentVoiceChannel?.id === VOICE_CHANNELS.LOBBY_CHANNEL_ID) {
-    // Member joined Lobby, assign empty channel
-    await assignEmptyVoiceChannel(newState);
-  }
-
   // Assign or revoke voice role
-  if (newState.channel === null) {
+  if (currentVoiceChannel === null) {
     // Member left voice channel, revoke voice role
-    await revokeVoiceRole(newState);
+    await revokeVoiceRole(newState).catch(console.error);
   } else {
     // Member joined voice channel, assign voice role
-    await assignVoiceRole(newState);
+    await assignVoiceRole(newState).catch(console.error);
   }
 
-  // Check to see if previous voice channel exists. A voice channel not existing
-  // might be the case if the member just joined a voice channel after not being
-  // connected previously.
-  if (previousVoiceChannel === null) return;
-  // A previous channel exists and might have been left empty. Clean up if that's the case.
-  await cleanUp(previousVoiceChannel);
+  // Member has changed voice channel, make sure there's always one empty voice channel
+  const voiceCategory = await fetchVoiceCategory(newState);
+  const emptyVoiceChannels = findEmptyVoiceChannels(voiceCategory);
+  if (emptyVoiceChannels.size === 0) {
+    await createVoiceChannel(voiceCategory);
+  } else if (emptyVoiceChannels.size > 1) {
+    await cleanUp(emptyVoiceChannels);
+  }
 }
 
 /**
@@ -120,13 +178,9 @@ async function revokeVoiceRole(voiceState: VoiceState) {
   await member.roles.remove(voiceRole);
 }
 
-/**
- * Assigns the user to an empty voice channel in the voice category.
- * If no empty voice channel is found, a new one is created.
- * @param voiceState - The voice state of the user.
- * @throws Error if the voice category is not found or is not a category.
- */
-async function assignEmptyVoiceChannel(voiceState: VoiceState) {
+async function fetchVoiceCategory(
+  voiceState: VoiceState,
+): Promise<CategoryChannel> {
   const voiceCategory =
     await voiceState.guild.channels.fetch(VOICE_CATEGORY_ID);
   if (voiceCategory === null) {
@@ -137,16 +191,11 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
     console.error("Voice category is not a category");
     throw new Error("Voice category is not a category");
   }
+
   // Fetch all channels in category
   await voiceCategory.fetch();
 
-  // Get empty voice channel
-  let channel = findEmptyVoiceChannel(voiceCategory);
-  if (channel === undefined) {
-    channel = await createVoiceChannel(voiceCategory);
-  }
-
-  await voiceState.setChannel(channel);
+  return voiceCategory;
 }
 
 /**
@@ -154,20 +203,24 @@ async function assignEmptyVoiceChannel(voiceState: VoiceState) {
  * @param voiceCategory - The voice category to search within.
  * @returns The empty voice channel if found, otherwise undefined.
  */
-function findEmptyVoiceChannel(
+function findEmptyVoiceChannels(
   voiceCategory: CategoryChannel,
-): VoiceChannel | undefined {
-  const channels = voiceCategory.children.cache;
-  const voiceChannels = channels.filter((channel): channel is VoiceChannel => {
-    return channel.type === ChannelType.GuildVoice;
-  });
-  const emptyVoiceChannels = voiceChannels.filter((channel) => {
-    return !PROTECTED_CHANNEL_IDS.includes(channel.id);
-  });
-  const emptyVoiceChannel = emptyVoiceChannels.find((channel) => {
-    return channel.members.size === 0;
-  });
-  return emptyVoiceChannel;
+): Collection<string, VoiceChannel> {
+  // Check if there's an empty voice channel
+  const emptyVoiceChannels = voiceCategory.children.cache
+    .filter((channel): channel is VoiceChannel => {
+      // Filter out non-voice channels
+      return channel.type === ChannelType.GuildVoice;
+    })
+    .filter((channel) => {
+      // Remove AFK channel from list of empty channels
+      return channel.id !== VOICE_CHANNELS.AFK_CHANNEL_ID;
+    })
+    .filter((channel) => {
+      // Filter out non-empty channels
+      return channel.members.size === 0;
+    });
+  return emptyVoiceChannels;
 }
 
 /**
@@ -179,8 +232,21 @@ function findEmptyVoiceChannel(
 async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
-  const channelName = "Debug";
-  const secondLastPosition = voiceCategory.children.cache.size - 2;
+  const prefix = _.sample(CHANNEL_NAMES);
+  const suffix = Date.now()
+    .toString(16)
+    .slice(-2)
+    .toLocaleUpperCase()
+    .split("")
+    .join("-");
+  const channelName = `${prefix} ${suffix}`;
+  const voiceChannels = voiceCategory.children.cache.filter(
+    (channel): channel is VoiceChannel => {
+      // Filter out non-voice channels
+      return channel.type === ChannelType.GuildVoice;
+    },
+  );
+  const secondLastPosition = voiceChannels.size - 2;
   const options: GuildChannelCreateOptions & { type: ChannelType.GuildVoice } =
     {
       name: channelName,
@@ -192,51 +258,88 @@ async function createVoiceChannel(
   return channel;
 }
 
-async function cleanUp(previousVoiceChannel: VoiceBasedChannel) {
-  const channelId = previousVoiceChannel.id;
+async function cleanUp(voiceChannels: Collection<string, VoiceChannel>) {
+  // Queue channels for deletion
+  const deletableVoiceChannels = queueChannelsForDeletion(voiceChannels);
 
-  // Check if channel is protected and as thus should not be deleted
-  for (const protectedChannelId of PROTECTED_CHANNEL_IDS) {
-    if (channelId === protectedChannelId) return;
+  // Channels need to be deleted, schedule for potential deletion in 60s
+  await setTimeout(VOICE_CHANNEL_DELETION_TIMEOUT);
+
+  // Delete channels
+  await deleteChannels(deletableVoiceChannels);
+}
+
+function queueChannelsForDeletion(
+  voiceChannels: Collection<string, VoiceChannel>,
+) {
+  const deletableVoiceChannels = voiceChannels
+    .filter((channel) => {
+      // Sanity check: Check if channel is protected and as thus should not be deleted
+      for (const protectedChannelId of PROTECTED_CHANNEL_IDS) {
+        const isNotProtected = channel.id !== protectedChannelId;
+        return isNotProtected;
+      }
+    })
+    .filter((channel) => {
+      // Check if channel is empty
+      const isEmpty = channel.members.size === 0;
+      return isEmpty;
+    });
+  deletableVoiceChannels.forEach((channel) => {
+    // Give channel an expiration timestamp
+    const now = Date.now();
+    const deleteAfterTimestamp = now + VOICE_CHANNEL_DELETION_TIMEOUT;
+    channelExpirationTimestamps.set(channel.id, deleteAfterTimestamp);
+  });
+  return deletableVoiceChannels;
+}
+
+async function deleteChannels(voiceChannels: Collection<string, VoiceChannel>) {
+  const deletableVoiceChannels = voiceChannels
+    .filter((channel) => {
+      // Check if voice channel still exists
+      const channelExists = channel.guild.channels.cache.has(channel.id);
+      return channelExists;
+    })
+    .filter((channel) => {
+      // Check if channel is deletable already
+      const now = Date.now();
+      const deletionTimestamp = channelExpirationTimestamps.get(channel.id);
+      if (deletionTimestamp === undefined) return false;
+      const isDeletable = now >= deletionTimestamp;
+      return isDeletable;
+    });
+
+  // Delete channels
+  for (const channel of deletableVoiceChannels.values()) {
+    await deleteChannel(channel);
   }
+}
 
-  // Check if channel is empty now
-  if (previousVoiceChannel.members.first() !== undefined) {
-    return;
-  }
-
-  // Give channel a nonce
-  const channelNonce = (channelNonces.get(previousVoiceChannel.id) ?? 0) + 1;
-  channelNonces.set(channelId, channelNonce);
-
-  // Channel needs to be deleted, schedule for potential deletion in 60s
-  await setTimeout(60e3);
-
-  // Check if voice channel still exists
-  const channelExists =
-    previousVoiceChannel.guild.channels.cache.has(channelId);
-  if (!channelExists) return;
-
-  // Check if nonce still matches. This may not be the case if the channel was previously joined and left again.
-  const currentNonce = channelNonces.get(channelId);
-  if (currentNonce !== channelNonce) return;
-
+async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Prevent members from joining voice channel. This is to prevent a race condition where someone joins the channel just before it gets deleted.
   const channelFreezeOptions: GuildChannelEditOptions = {
     userLimit: 0,
   };
-  await previousVoiceChannel.edit(channelFreezeOptions);
+  await voiceChannel.edit(channelFreezeOptions);
 
   // Check if there's no person in the channel.
-  if (previousVoiceChannel.members.first()) {
+  if (voiceChannel.members.first()) {
     // Someone connected in the mean time, unlock again
     const channelUnfreezeOptions: GuildChannelEditOptions = {
       userLimit: undefined,
     };
-    await previousVoiceChannel.edit(channelUnfreezeOptions);
+    await voiceChannel.edit(channelUnfreezeOptions);
     return;
   }
 
   // Delete channel
-  await previousVoiceChannel.delete();
+  await voiceChannel.delete();
+
+  // Clean up from map
+  channelExpirationTimestamps.delete(voiceChannel.id);
 }
+
+/**
+ * TODO: There's a bug where leaving a voice channel will result in all queued voice channels having their deletion timestamp reset.
+ */
