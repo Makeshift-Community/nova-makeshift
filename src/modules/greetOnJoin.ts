@@ -12,15 +12,12 @@ const SUBJECTS = [
   "food",
   "Warframe",
   "animal",
-  "Canadian artist",
   "music genre",
   "YouTube channel",
   "vegetarian dish",
   "fruit",
   "vegetable",
-  "Discord emoji",
   "Pokémon",
-  "TheFatRat song",
 ];
 
 export default async function (member: GuildMember) {
