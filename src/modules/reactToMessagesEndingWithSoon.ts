@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
-import { GUILD_ID, EMOJIS } from "../resources/backend.js";
+import COMMON_CONFIG from "../resources/common.js";
+const { SUPPORT_GUILD_EMOJIS, SUPPORT_GUILD_ID } = COMMON_CONFIG;
+const { SOONTM: EMOJI_ID } = SUPPORT_GUILD_EMOJIS;
 
-const EMOJI_ID = EMOJIS.SOONTM;
-
-const trigger = /soon$/i;
+const TRIGGER = /soon$/i;
 
 export default async function (message: Message) {
   // Check if message was issued on a guild
@@ -11,13 +11,13 @@ export default async function (message: Message) {
     return;
   }
   // Check if message ends with "soon"
-  const hasTrigger = trigger.test(message.content);
+  const hasTrigger = TRIGGER.test(message.content);
   if (!hasTrigger) {
     return;
   }
 
   const guild = await message.client.guilds
-    .fetch(GUILD_ID)
+    .fetch(SUPPORT_GUILD_ID)
     .catch(console.error);
   const emoji = await guild?.emojis?.fetch(EMOJI_ID).catch(console.error);
   if (emoji === undefined) {
