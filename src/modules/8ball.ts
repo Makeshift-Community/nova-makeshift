@@ -68,7 +68,7 @@ function pickResponse(message: Message): string {
 
   // Random response
   const nRandom = Math.random();
-  const {author} = message;
+  const { author } = message;
   // LEGENDARY
   if (nRandom * 1000 < 1) return `Love you, ${author.toString()} 😘`;
   // RARE
