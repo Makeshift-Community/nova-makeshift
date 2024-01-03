@@ -1,5 +1,6 @@
 # Secret stuff
 /token.js
+/cache/
 
 # Debug files
 /debug/
