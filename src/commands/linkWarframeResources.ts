@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import Command from "../Command.js";
 
-const name = "resource";
+const name = "link";
 
 const wikiSubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("wiki")
