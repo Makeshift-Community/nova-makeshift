@@ -111,11 +111,7 @@ export async function logMessageActivity(message) {
         date: encryptedDate,
         salt: encryptedSalt,
     };
-    await LoggedMessageModel.create(loggedMessage)
-        .catch(console.error)
-        .then(() => {
-        console.log("M\r");
-    });
+    await LoggedMessageModel.create(loggedMessage).catch(console.error);
 }
 export async function logVoiceActivity(oldState, newState) {
     // Step 0: Check if database connection was established
@@ -162,9 +158,5 @@ export async function logVoiceActivity(oldState, newState) {
         date: encryptedDate,
         salt: encryptedSalt,
     };
-    await LoggedVoiceStateModel.create(loggedVoiceState)
-        .catch(console.error)
-        .then(() => {
-        console.log("V\r");
-    });
+    await LoggedVoiceStateModel.create(loggedVoiceState).catch(console.error);
 }

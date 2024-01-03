@@ -345,3 +345,8 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
 }
+
+/**
+ * There might still be a bug where the voice channel that is supposed to be cleaned up
+ * does not get deleted or does not get its new deletion timestamp bumped.
+ */
