@@ -285,6 +285,11 @@ function queueChannelsForDeletion(
       // Check if channel is empty
       const isEmpty = channel.members.size === 0;
       return isEmpty;
+    })
+    .filter((channel) => {
+      // Check if channel has not been queued for deletion yet
+      const hasBeenQueued = channelExpirationTimestamps.has(channel.id);
+      return !hasBeenQueued;
     });
   deletableVoiceChannels.forEach((channel) => {
     // Give channel an expiration timestamp
@@ -340,7 +345,3 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
 }
-
-/**
- * TODO: There's a bug where leaving a voice channel will result in all queued voice channels having their deletion timestamp reset.
- */
