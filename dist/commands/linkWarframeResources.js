@@ -1,6 +1,6 @@
 import { italic, bracketed } from "../utils/customFormatters.js";
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, hideLinkEmbed, hyperlink, } from "discord.js";
-const name = "resource";
+const name = "link";
 const wikiSubcommandBuilder = new SlashCommandSubcommandBuilder()
     .setName("wiki")
     .setDescription("Link to the official Wiki");

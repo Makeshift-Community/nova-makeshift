@@ -31,7 +31,6 @@ async function handle(interaction) {
         params: { search: searchTerm },
     });
     const data = search.data;
-    console.log(data);
     const pageName = data[1][0];
     const pageUrl = data[3][0];
     if (pageName === "WARFRAME Wiki") {
