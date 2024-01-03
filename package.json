@@ -1,6 +1,6 @@
 {
   "name": "nova-makeshift",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "A bot for the Makeshift community.",
   "main": "dist/server.js",
   "type": "module",
