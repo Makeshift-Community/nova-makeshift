@@ -114,7 +114,8 @@ export default async function (oldState: VoiceState, newState: VoiceState) {
   if (emptyVoiceChannels.size === 0) {
     await createVoiceChannel(voiceCategory);
   } else if (emptyVoiceChannels.size > 1) {
-    await cleanUp(emptyVoiceChannels);
+    // Do not wait for clean up to finish, this can take a while
+    cleanUp(emptyVoiceChannels).catch(console.error);
   }
 }
 
