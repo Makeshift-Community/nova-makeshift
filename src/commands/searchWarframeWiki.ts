@@ -51,7 +51,6 @@ async function handle(interaction: ChatInputCommandInteraction) {
     params: { search: searchTerm },
   });
   const data = search.data;
-  console.log(data);
   const pageName = data[1][0];
   const pageUrl = data[3][0];
 

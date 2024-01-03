@@ -144,11 +144,7 @@ export async function logMessageActivity(message: Message) {
     date: encryptedDate,
     salt: encryptedSalt,
   };
-  await LoggedMessageModel.create(loggedMessage)
-    .catch(console.error)
-    .then(() => {
-      console.log("M\r");
-    });
+  await LoggedMessageModel.create(loggedMessage).catch(console.error);
 }
 
 export async function logVoiceActivity(
@@ -205,9 +201,5 @@ export async function logVoiceActivity(
     date: encryptedDate,
     salt: encryptedSalt,
   };
-  await LoggedVoiceStateModel.create(loggedVoiceState)
-    .catch(console.error)
-    .then(() => {
-      console.log("V\r");
-    });
+  await LoggedVoiceStateModel.create(loggedVoiceState).catch(console.error);
 }
