@@ -1,3 +1,0 @@
-VoiceConnection
-
-extends EventEmitter implements PlayInterface

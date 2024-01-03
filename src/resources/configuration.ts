@@ -19,8 +19,8 @@ export interface Configuration {
     NOVA_USER_ID: string;
     OCTAVIA_USER_ID: string;
   };
-  WEBHOOKS: {
-    LEGACY_VOICE_WEBHOOK_ID: string;
+  SETTINGS: {
+    VOICE_CHANNEL_DELETION_TIMEOUT: number;
   };
 }
 

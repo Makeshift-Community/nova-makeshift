@@ -52,8 +52,16 @@ const COMMON_RESPONSES = [
     "Not on my watch",
     "**NEIN!**",
 ];
-function pickAnswer(author) {
+function pickResponse(message) {
+    // Appropriate response to ~~Zephyr~~ Yareli
+    const TRIGGER = /yareli/i;
+    const mentionsYareli = TRIGGER.test(message.content);
+    if (mentionsYareli) {
+        return "Yareli is a useless piece of shit, stop asking.";
+    }
+    // Random response
     const nRandom = Math.random();
+    const { author } = message;
     // LEGENDARY
     if (nRandom * 1000 < 1)
         return `Love you, ${author.toString()} 😘`;
@@ -73,18 +81,14 @@ export default async function (message) {
     if (message.guild === null) {
         return;
     }
-    const trigger = /^Nova,\s/i;
-    const hasTrigger = trigger.test(message.content);
+    // Check if message contains trigger
+    const TRIGGER = /^Nova,\s/i;
+    const hasTrigger = TRIGGER.test(message.content);
     if (!hasTrigger) {
         return;
     }
-    // Appropriate response to Zephyr
-    const zephyrTrigger = /zephyr/i;
-    const hasZephyrTrigger = zephyrTrigger.test(message.content);
-    if (hasZephyrTrigger) {
-        return "Zephyr is a useless piece of shit, stop asking.";
-    }
-    // Pick randomized answer
-    const answer = pickAnswer(message.author);
-    await message.channel.send(answer);
+    // Pick response
+    const response = pickResponse(message);
+    // Send response
+    await message.channel.send(response);
 }
