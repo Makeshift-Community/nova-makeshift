@@ -12,7 +12,7 @@
     "start:register": "node dist/register.js",
     "lint": "npx prettier --write . && npx eslint . && npx --package=typescript tsc --noEmit",
     "test": "npx --package=typescript tsc && npm start",
-    "build": "npm run lint && npx --package=typescript tsc --build --clean && npx --package=typescript tsc"
+    "build": "npm run lint && rm -rf dist/ && npx --package=typescript tsc"
   },
   "keywords": [
     "discord",
