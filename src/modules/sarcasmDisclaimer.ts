@@ -1,14 +1,21 @@
-import { Message } from "discord.js";
+import { Message, italic } from "discord.js";
 
-const trigger = /(?:^|\s)\/s$/;
+/**
+ * This regex checks that a message ends with "/s" under the following conditions:
+ * - There is a space, punctuation or simply nothing before the "/s"
+ * - There are only spaces and/or punctuation after the "/s"
+ */
+const TRIGGER = /(?:^|[\p{S}\s])\/s[\p{S}\s]*$/u;
 
 export default async function (message: Message) {
   // Check
   if (message.guild === null) {
     return;
   }
-  const hasTrigger = trigger.test(message.content);
+  const hasTrigger = TRIGGER.test(message.content);
   if (!hasTrigger) return;
 
-  await message.channel.send("*(That was sarcasm)*").catch(console.error);
+  let response = "(That was sarcasm)";
+  response = italic(response);
+  await message.channel.send(response).catch(console.error);
 }
