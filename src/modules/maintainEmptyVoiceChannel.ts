@@ -234,8 +234,9 @@ async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
   const prefix = _.sample(CHANNEL_NAMES);
-  const suffix = Date.now()
+  const suffix = (Date.now() / 1000)
     .toString(16)
+    .padStart(2, "0")
     .slice(-2)
     .toLocaleUpperCase()
     .split("")
