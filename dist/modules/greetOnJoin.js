@@ -23,6 +23,9 @@ export default async function (member) {
     const guild = member.guild;
     if (guild.id !== GUILD_ID)
         return;
+    // Check if member is a bot
+    if (member.user.bot)
+        return;
     // Get general channel
     const channel = await guild.channels
         .fetch(GENERAL_CHANNEL_ID)
