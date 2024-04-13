@@ -11,7 +11,7 @@
     "start": "node .",
     "start:register": "node dist/register.js",
     "lint": "npx prettier --write . && npx eslint . && npx --package=typescript tsc --noEmit",
-    "test": "npx --package=typescript tsc && npm start",
+    "debug": "npx --package=typescript tsc && npm start",
     "build": "npm run lint && rm -rf dist/ && npx --package=typescript tsc"
   },
   "keywords": [
