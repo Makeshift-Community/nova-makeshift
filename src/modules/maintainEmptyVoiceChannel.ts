@@ -79,9 +79,9 @@ const CHANNEL_NAMES = [
   "Zephyr",
 ];
 
-// I mean, when are you going to have over 59 VCs
+// I mean, when are you going to have over 58 VCs
 // Also, help with the humor would be appreciated
-const NAME_ACCOLADE = [
+const NAME_ACCOLADES = [
   "And The Boys",
   "Throwing Hands",
   "For Dummies",
@@ -122,7 +122,6 @@ const NAME_ACCOLADE = [
   "Has A Cease And Desist",
   "Doing A Backflip",
   "Hands Off Best Warframe",
-  "Is A Trap",
   "Is Just A Little Guy",
   "Is Cooking",
   "Should Not Cook Ever Again",
@@ -299,8 +298,8 @@ async function createVoiceChannel(
 ): Promise<VoiceChannel> {
   const prefix = _.sample(CHANNEL_NAMES);
   
-  const suffix = NAME_ACCOLADE.length > 0 ? //Check if NAME_ACCOLADE has any remaining accolades
-    NAME_ACCOLADE.splice(Math.random() * NAME_ACCOLADE.length) :
+  const suffix = NAME_ACCOLADES.length > 0 ? //Check if NAME_ACCOLADE has any remaining accolades
+    NAME_ACCOLADES.splice(Math.random() * NAME_ACCOLADES.length) :
     (Date.now() / 1000)
       .toString(16)
       .padStart(2, "0")
@@ -419,7 +418,9 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // I totally don't want to make a regex to check if it's a hex code
   // So I will just trust it won't come to it
   // - Diamon0
-  NAME_ACCOLADE.push(voiceChannel.name.slice(voiceChannel.name.indexOf(' ') + 1));
+  const accoladeStartIndex = voiceChannel.name.indexOf(' ') + 1;
+  const recoveredAccolade = voiceChannel.name.slice(accoladeStartIndex);
+  NAME_ACCOLADES.push(recoveredAccolade);
 }
 
 /**
