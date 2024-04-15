@@ -79,6 +79,70 @@ const CHANNEL_NAMES = [
   "Zephyr",
 ];
 
+// I mean, when are you going to have over 59 VCs
+// Also, help with the humor would be appreciated
+const NAME_ACCOLADE = [
+  "And The Boys",
+  "Throwing Hands",
+  "For Dummies",
+  "9000",
+  "Ated My Homework",
+  "Is So Done",
+  "Shitposting On Main",
+  "Is Horny On Main",
+  "Ew",
+  "Panicking",
+  "Leaked The Discord Server",
+  "Knows What You Did",
+  "Missed The Joke",
+  "The Anime Protagonist",
+  "The Anime Protagonist But Lamer",
+  "VTuber Channel",
+  "At The Disco",
+  "Seriously Needs Help",
+  "Is Exactly What You Would Expect",
+  "Is Not A Moon",
+  "Comes In Peace",
+  "Came In Peace",
+  "Came And Was Pacified",
+  "Is Playing The Stock Market",
+  "Is Playing Armored Core",
+  "Sucks At Armored Core",
+  "Is Playing GG Strive",
+  "Sucks At GG Strive",
+  "Has A Town Inside Them",
+  "Forgor",
+  "Should Get A Job",
+  "And My 99 Other GFs",
+  "Had one Job",
+  "Does Dirty Deeds For Dirt Cheap",
+  "Is Getting Married To Hatsune Miku",
+  "Doesnt Know How To Spell",
+  "Does Know How To Spell",
+  "Has A Cease And Desist",
+  "Doing A Backflip",
+  "Hands Off Best Warframe",
+  "Is A Trap",
+  "Is Just A Little Guy",
+  "Is Cooking",
+  "Should Not Cook Ever Again",
+  "Does Math And Fails Epicly",
+  "And Their Extreme Case Of DumDum",
+  "Commits Tax Evasion",
+  "Commits Fraud",
+  "Commits Robbery",
+  "Commits To Their Relationship",
+  "Commits A Warcrime",
+  "Is A Weeb",
+  "Is Playing A Weeb Game",
+  "Listens To 100 Hours Of Caramelldansen",
+  "Is Hatsune Mikus Biggest Fan",
+  "But Better",
+  "But Worse",
+  "Is Coming For Your Taxes",
+  "Is A True Wingman"
+];
+
 /**
  * Handles the event when a member's voice channel changes in the Makeshift guild.
  * Assigns potential empty channel and voice role to the member.
@@ -234,13 +298,17 @@ async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
   const prefix = _.sample(CHANNEL_NAMES);
-  const suffix = (Date.now() / 1000)
-    .toString(16)
-    .padStart(2, "0")
-    .slice(-2)
-    .toLocaleUpperCase()
-    .split("")
-    .join("-");
+  
+  const suffix = NAME_ACCOLADE.length > 0 ? //Check if NAME_ACCOLADE has any remaining accolades
+    NAME_ACCOLADE.splice(Math.random() * NAME_ACCOLADE.length) :
+    (Date.now() / 1000)
+      .toString(16)
+      .padStart(2, "0")
+      .slice(-2)
+      .toLocaleUpperCase()
+      .split("")
+      .join("-");
+
   const channelName = `${prefix} ${suffix}`;
   const voiceChannels = voiceCategory.children.cache.filter(
     (channel): channel is VoiceChannel => {
@@ -345,6 +413,13 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
 
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
+
+  // Reincorporate Accolade Into Array
+  // There is a chance of this adding one of the hex codes
+  // I totally don't want to make a regex to check if it's a hex code
+  // So I will just trust it won't come to it
+  // - Diamon0
+  NAME_ACCOLADE.push(voiceChannel.name.slice(voiceChannel.name.indexOf(' ') + 1));
 }
 
 /**
