@@ -21,9 +21,9 @@
   "author": "NKN1396",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/rest": "^2.0.0",
+    "@discordjs/rest": "^2.4.3",
     "axios": "^1.8.2",
-    "discord.js": "^14.15.3",
+    "discord.js": "^14.18.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
