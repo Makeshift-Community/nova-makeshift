@@ -76,12 +76,8 @@ interface SubcommandResponseCollection {
 
 const subcommandResponses: SubcommandResponseCollection = {
   [wikiSubcommandBuilder.name]: {
-    url: "https://warframe.fandom.com/wiki/WARFRAME_Wiki",
-    displayEmbed: false,
-    disclaimer:
-      "Note: While this community is not operated by Digital Extremes, it is officially endorsed by them",
-    disclaimerSource:
-      "https://warframe.fandom.com/wiki/WARFRAME_Wiki:Official_Wiki",
+    url: "https://wiki.warframe.com/",
+    displayEmbed: true,
   },
   [overframeSubcommandBuilder.name]: {
     url: "https://overframe.gg/",
