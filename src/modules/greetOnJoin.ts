@@ -43,7 +43,7 @@ export default async function (member: GuildMember) {
   // Send welcome message
   channel
     .send(
-      `Welcome to the Makeshift community Discord, ${member.toString()}. State your favorite ${subject}, NOW!`,
+      `Welcome to the Makeshift community Discord, ${member.toString()}.\n# State your favorite ${subject}, NOW!`,
     )
     .catch(console.error);
 }
