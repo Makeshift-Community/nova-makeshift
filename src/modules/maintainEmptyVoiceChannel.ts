@@ -139,7 +139,7 @@ const NAME_ACCOLADES = [
   "But Better",
   "But Worse",
   "Is Coming For Your Taxes",
-  "Is A True Wingman"
+  "Is A True Wingman",
 ];
 
 /**
@@ -297,16 +297,17 @@ async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
   const prefix = _.sample(CHANNEL_NAMES);
-  
-  const suffix = NAME_ACCOLADES.length > 0 ? //Check if NAME_ACCOLADE has any remaining accolades
-    NAME_ACCOLADES.splice(Math.random() * NAME_ACCOLADES.length) :
-    (Date.now() / 1000)
-      .toString(16)
-      .padStart(2, "0")
-      .slice(-2)
-      .toLocaleUpperCase()
-      .split("")
-      .join("-");
+
+  const suffix =
+    NAME_ACCOLADES.length > 0 //Check if NAME_ACCOLADE has any remaining accolades
+      ? NAME_ACCOLADES.splice(Math.random() * NAME_ACCOLADES.length)
+      : (Date.now() / 1000)
+          .toString(16)
+          .padStart(2, "0")
+          .slice(-2)
+          .toLocaleUpperCase()
+          .split("")
+          .join("-");
 
   const channelName = `${prefix} ${suffix}`;
   const voiceChannels = voiceCategory.children.cache.filter(
@@ -418,7 +419,7 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // I totally don't want to make a regex to check if it's a hex code
   // So I will just trust it won't come to it
   // - Diamon0
-  const accoladeStartIndex = voiceChannel.name.indexOf(' ') + 1;
+  const accoladeStartIndex = voiceChannel.name.indexOf(" ") + 1;
   const recoveredAccolade = voiceChannel.name.slice(accoladeStartIndex);
   NAME_ACCOLADES.push(recoveredAccolade);
 }
