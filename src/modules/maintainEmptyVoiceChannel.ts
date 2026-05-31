@@ -1,4 +1,4 @@
-import CONFIG from "../resources/configuration.js";
+import CONFIG from "../resources/configuration.ts";
 const { GUILD_ID, VOICE_CHANNELS, VOICE_CATEGORY_ID, ROLES, SETTINGS } = CONFIG;
 const PROTECTED_CHANNEL_IDS = [
   VOICE_CHANNELS.LOBBY_CHANNEL_ID,
