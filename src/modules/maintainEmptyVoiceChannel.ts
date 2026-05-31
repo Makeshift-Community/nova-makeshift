@@ -11,9 +11,9 @@ import {
   CategoryChannel,
   ChannelType,
   Collection,
-  GuildChannelCreateOptions,
-  GuildChannelEditOptions,
-  VoiceBasedChannel,
+  type GuildChannelCreateOptions,
+  type GuildChannelEditOptions,
+  type VoiceBasedChannel,
   VoiceChannel,
   VoiceState,
 } from "discord.js";

@@ -1,4 +1,4 @@
-import Command from "../Command.js";
+import type Command from "../Command.ts";
 
 import {
   ChatInputCommandInteraction,

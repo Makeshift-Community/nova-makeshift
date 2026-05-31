@@ -1,10 +1,10 @@
-import Command from "../Command.js";
+import type Command from "../Command.ts";
 
 import { inspect } from "util";
 import {
   AttachmentBuilder,
   ChatInputCommandInteraction,
-  InteractionEditReplyOptions,
+  type InteractionEditReplyOptions,
   SlashCommandBooleanOption,
   SlashCommandStringOption,
   codeBlock,

@@ -1,10 +1,10 @@
+import type Command from "../Command.ts";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
   heading,
 } from "discord.js";
-import Command from "../Command.js";
 
 const name = "rule";
 

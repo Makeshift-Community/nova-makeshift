@@ -1,4 +1,4 @@
-import { Configuration } from "./configuration.js";
+import type { Configuration } from "./configuration.ts";
 
 export default {
   GUILD_ID: "299298454457548801",

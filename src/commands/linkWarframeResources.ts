@@ -1,5 +1,5 @@
-import { italic, bracketed } from "../utils/customFormatters.js";
-
+import type Command from "../Command.ts";
+import { italic, bracketed } from "../utils/customFormatters.ts";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -7,7 +7,6 @@ import {
   hideLinkEmbed,
   hyperlink,
 } from "discord.js";
-import Command from "../Command.js";
 
 const name = "link";
 

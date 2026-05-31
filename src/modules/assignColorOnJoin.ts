@@ -3,7 +3,7 @@ import _ from "lodash";
 import { GuildMember } from "discord.js";
 
 // Internal dependencies
-import CONFIG from "../resources/configuration.js";
+import CONFIG from "../resources/configuration.ts";
 const { COLORED_ROLES, GUILD_ID } = CONFIG;
 
 export default async function (member: GuildMember) {

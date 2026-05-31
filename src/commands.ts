@@ -1,8 +1,8 @@
-import Command from "./Command.js";
-import evaluateJavascriptCommand from "./commands/evaluateJavascript.js";
-import searchWarframeWikiCommand from "./commands/searchWarframeWiki.js";
-import linkWarframeResources from "./commands/linkWarframeResources.js";
-import rulesCommand from "./commands/rules.js";
+import type Command from "./Command.ts";
+import evaluateJavascriptCommand from "./commands/evaluateJavascript.ts";
+import searchWarframeWikiCommand from "./commands/searchWarframeWiki.ts";
+import linkWarframeResources from "./commands/linkWarframeResources.ts";
+import rulesCommand from "./commands/rules.ts";
 
 export default [
   evaluateJavascriptCommand,
