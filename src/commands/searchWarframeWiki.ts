@@ -8,16 +8,18 @@ import {
 import axios from "axios";
 
 const WikiArticleSearcher = axios.create({
-  baseURL: "https://warframe.fandom.com/api.php",
+  baseURL: "https://wiki.warframe.com/api.php",
   timeout: 10000,
   headers: {
     "User-Agent": "axios",
   },
   params: {
-    action: "opensearch",
-    format: "json",
-    namespace: "0",
-    limit: "1",
+    "action": "opensearch",
+    "format": "json",
+    "namespace": "0",
+    "limit": "1",
+    "utf8": "1",
+    "formatversion": "2",
   },
 });
 
