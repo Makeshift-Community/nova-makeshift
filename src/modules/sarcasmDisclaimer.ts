@@ -8,10 +8,11 @@ import { Message, italic } from "discord.js";
 const TRIGGER = /(?:^|[\p{S}\s])\/s[\p{S}\s]*$/u;
 
 export default async function (message: Message) {
-  // Check
-  if (message.guild === null) {
+  // Check if message was sent in guild
+  if (!message.inGuild()) {
     return;
   }
+
   const hasTrigger = TRIGGER.test(message.content);
   if (!hasTrigger) return;
 

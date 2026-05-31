@@ -7,7 +7,7 @@ const TRIGGER = /soon$/i;
 
 export default async function (message: Message) {
   // Check if message was issued on a guild
-  if (message.guild === null) {
+  if (!message.inGuild()) {
     return;
   }
   // Check if message ends with "soon"
