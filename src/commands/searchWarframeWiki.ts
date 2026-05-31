@@ -49,8 +49,8 @@ async function handle(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
 
   // Search for entry
-  const search = await WikiArticleSearcher.get<WikiaOpensearchResponse>("/", {
-    params: { search: searchTerm },
+  const search = await WikiArticleSearcher.get<WikiaOpensearchResponse>("", {
+    params: { "search": searchTerm },
   });
   const data = search.data;
   const pageName = data[1][0];
