@@ -111,7 +111,7 @@ const subcommandResponses: SubcommandResponseCollection = {
     displayEmbed: false,
   },
   [glyphSubcommandBuilder.name]: {
-    url: "https://forums.warframe.com/topic/992008-free-promocodes-and-glyphs-all-platforms/",
+    url: "https://forums.warframe.com/topic/992008-free-promocodes-and-content-creator-glyphs/",
     displayEmbed: true,
     disclaimer:
       "Note: This content is not officially endorsed by Digital Extremes",
