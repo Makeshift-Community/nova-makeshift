@@ -1,6 +1,6 @@
 {
   "name": "nova-makeshift",
-  "version": "7.2.3",
+  "version": "8.0.0",
   "description": "A bot for the Makeshift community.",
   "main": "index.ts",
   "type": "module",
