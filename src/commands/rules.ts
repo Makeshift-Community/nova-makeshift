@@ -14,27 +14,27 @@ const rule1SubcommandBuilder = new SlashCommandSubcommandBuilder()
 
 const rule2SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("2")
-  .setDescription("Rule 2: Placeholder");
+  .setDescription("Rule 2: Controversial topics are okay");
 
 const rule3SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("3")
-  .setDescription("Rule 3: Placeholder");
+  .setDescription("Rule 3: You deserve a warning");
 
 const rule4SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("4")
-  .setDescription("Rule 4: Placeholder");
+  .setDescription("Rule 4: Maintain a recognizable name");
 
 const rule5SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("5")
-  .setDescription("Rule 5: Placeholder");
+  .setDescription("Rule 5: 14 days of inactivity are okay");
 
 const rule6SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("6")
-  .setDescription("Rule 6: Placeholder");
+  .setDescription("Rule 6: Stay engaged with the community");
 
 const rule7SubcommandBuilder = new SlashCommandSubcommandBuilder()
   .setName("7")
-  .setDescription("Rule 7: Placeholder");
+  .setDescription("Rule 7: Tag NSFW content");
 
 const builder = new SlashCommandBuilder()
   .setName(name)
