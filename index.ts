@@ -2,8 +2,8 @@
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 
 // Custom dependencies
-import TOKEN from "../token.js"; // I'm an idiot, thanks for the lesson
-import registerModules from "./listeners.js";
+import TOKEN from "./token.ts"; // I'm an idiot, thanks for the lesson
+import registerModules from "./src/listeners.ts";
 
 // Display warning if we're in development mode
 if (process.env.NODE_ENV !== "production") {
