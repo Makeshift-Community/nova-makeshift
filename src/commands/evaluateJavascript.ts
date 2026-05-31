@@ -9,6 +9,8 @@ import {
   SlashCommandStringOption,
   codeBlock,
   SlashCommandBuilder,
+  type InteractionDeferReplyOptions,
+  MessageFlags,
 } from "discord.js";
 
 const name = "eval";
@@ -18,7 +20,11 @@ async function handle(interaction: ChatInputCommandInteraction) {
   const discrete = interaction.options.getBoolean("discrete", false) ?? true;
 
   // Defer
-  await interaction.deferReply({ ephemeral: discrete });
+  const options: InteractionDeferReplyOptions = {};
+  if(discrete) {
+    options.flags = MessageFlags.Ephemeral;
+  }
+  await interaction.deferReply(options);
 
   // Check permissions
   const application = await interaction.client.application.fetch();
