@@ -14,12 +14,12 @@ const WikiArticleSearcher = axios.create({
     "User-Agent": "axios",
   },
   params: {
-    "action": "opensearch",
-    "format": "json",
-    "namespace": "0",
-    "limit": "1",
-    "utf8": "1",
-    "formatversion": "2",
+    action: "opensearch",
+    format: "json",
+    namespace: "0",
+    limit: "1",
+    utf8: "1",
+    formatversion: "2",
   },
 });
 
@@ -50,7 +50,7 @@ async function handle(interaction: ChatInputCommandInteraction) {
 
   // Search for entry
   const search = await WikiArticleSearcher.get<WikiaOpensearchResponse>("", {
-    params: { "search": searchTerm },
+    params: { search: searchTerm },
   });
   const data = search.data;
   const pageName = data[1][0];

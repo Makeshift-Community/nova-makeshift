@@ -21,7 +21,7 @@ async function handle(interaction: ChatInputCommandInteraction) {
 
   // Defer
   const options: InteractionDeferReplyOptions = {};
-  if(discrete) {
+  if (discrete) {
     options.flags = MessageFlags.Ephemeral;
   }
   await interaction.deferReply(options);
