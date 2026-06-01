@@ -296,20 +296,9 @@ function findEmptyVoiceChannels(
 async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
-  const prefix = _.sample(CHANNEL_NAMES);
-
-  const suffix =
-    NAME_ACCOLADES.length > 0 //Check if NAME_ACCOLADE has any remaining accolades
-      ? NAME_ACCOLADES.splice(Math.random() * NAME_ACCOLADES.length)
-      : (Date.now() / 1000)
-          .toString(16)
-          .padStart(2, "0")
-          .slice(-2)
-          .toLocaleUpperCase()
-          .split("")
-          .join("-");
-
-  const channelName = `${prefix} ${suffix}`;
+  const channelNamePrefix = _.sample(CHANNEL_NAMES);
+  const channelNameSuffix = _.sample(NAME_ACCOLADES);
+  const channelName = `${channelNamePrefix} ${channelNameSuffix}`;
   const voiceChannels = voiceCategory.children.cache.filter(
     (channel): channel is VoiceChannel => {
       // Filter out non-voice channels
@@ -413,15 +402,6 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
 
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
-
-  // Reincorporate Accolade Into Array
-  // There is a chance of this adding one of the hex codes
-  // I totally don't want to make a regex to check if it's a hex code
-  // So I will just trust it won't come to it
-  // - Diamon0
-  const accoladeStartIndex = voiceChannel.name.indexOf(" ") + 1;
-  const recoveredAccolade = voiceChannel.name.slice(accoladeStartIndex);
-  NAME_ACCOLADES.push(recoveredAccolade);
 }
 
 /**
