@@ -334,10 +334,8 @@ function queueChannelsForDeletion(
   const deletableVoiceChannels = voiceChannels
     .filter((channel) => {
       // Sanity check: Check if channel is protected and as thus should not be deleted
-      for (const protectedChannelId of PROTECTED_CHANNEL_IDS) {
-        const isNotProtected = channel.id !== protectedChannelId;
-        return isNotProtected;
-      }
+      const isProtected = PROTECTED_CHANNEL_IDS.includes(channel.id);
+      return !isProtected;
     })
     .filter((channel) => {
       // Check if channel is empty
