@@ -317,6 +317,10 @@ async function createVoiceChannel(
   return channel;
 }
 
+/**
+ * Cleans up empty voice channels.
+ * @param voiceChannels - The collection of voice channels to clean up.
+ */
 async function cleanUp(voiceChannels: Collection<string, VoiceChannel>) {
   // Queue channels for deletion
   const deletableVoiceChannels = queueChannelsForDeletion(voiceChannels);
@@ -328,6 +332,11 @@ async function cleanUp(voiceChannels: Collection<string, VoiceChannel>) {
   await deleteChannels(deletableVoiceChannels);
 }
 
+/**
+ * Queues empty voice channels for deletion by giving them an expiration timestamp.
+ * @param voiceChannels - The collection of voice channels to check and queue for deletion.
+ * @returns A collection of voice channels that have been queued for deletion.
+ */
 function queueChannelsForDeletion(
   voiceChannels: Collection<string, VoiceChannel>,
 ) {
@@ -356,6 +365,10 @@ function queueChannelsForDeletion(
   return deletableVoiceChannels;
 }
 
+/**
+ * Deletes the specified voice channels if they are still empty and have reached their expiration timestamp.
+ * @param voiceChannels - The collection of voice channels to check and delete if necessary.
+ */
 async function deleteChannels(voiceChannels: Collection<string, VoiceChannel>) {
   const deletableVoiceChannels = voiceChannels
     .filter((channel) => {
@@ -378,6 +391,11 @@ async function deleteChannels(voiceChannels: Collection<string, VoiceChannel>) {
   }
 }
 
+/**
+ * Deletes the specified voice channel if it is still empty.
+ * @param voiceChannel - The voice channel to check and delete if necessary.
+ * @returns A promise that resolves when the channel has been deleted or if it was not deletable.
+ */
 async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Prevent members from joining voice channel. This is to prevent a race condition where someone joins the channel just before it gets deleted.
   const channelFreezeOptions: GuildChannelEditOptions = {
@@ -404,8 +422,3 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
 }
-
-/**
- * There might still be a bug where the voice channel that is supposed to be cleaned up
- * does not get deleted or does not get its new deletion timestamp bumped.
- */
