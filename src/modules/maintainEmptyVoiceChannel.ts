@@ -392,6 +392,9 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
       userLimit: undefined,
     };
     await voiceChannel.edit(channelUnfreezeOptions);
+
+    // Reset deletion state so the channel can be queued again later.
+    channelExpirationTimestamps.delete(voiceChannel.id);
     return;
   }
 
