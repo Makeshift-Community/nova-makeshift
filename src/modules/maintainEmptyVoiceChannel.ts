@@ -1,4 +1,4 @@
-import CONFIG from "../resources/configuration.js";
+import CONFIG from "../resources/configuration.ts";
 const { GUILD_ID, VOICE_CHANNELS, VOICE_CATEGORY_ID, ROLES, SETTINGS } = CONFIG;
 const PROTECTED_CHANNEL_IDS = [
   VOICE_CHANNELS.LOBBY_CHANNEL_ID,
@@ -11,9 +11,9 @@ import {
   CategoryChannel,
   ChannelType,
   Collection,
-  GuildChannelCreateOptions,
-  GuildChannelEditOptions,
-  VoiceBasedChannel,
+  type GuildChannelCreateOptions,
+  type GuildChannelEditOptions,
+  type VoiceBasedChannel,
   VoiceChannel,
   VoiceState,
 } from "discord.js";
@@ -77,6 +77,69 @@ const CHANNEL_NAMES = [
   "Xaku",
   "Yareli",
   "Zephyr",
+];
+
+// I mean, when are you going to have over 58 VCs
+// Also, help with the humor would be appreciated
+const NAME_ACCOLADES = [
+  "And The Boys",
+  "Throwing Hands",
+  "For Dummies",
+  "9000",
+  "Ated My Homework",
+  "Is So Done",
+  "Shitposting On Main",
+  "Is Horny On Main",
+  "Ew",
+  "Panicking",
+  "Leaked The Discord Server",
+  "Knows What You Did",
+  "Missed The Joke",
+  "The Anime Protagonist",
+  "The Anime Protagonist But Lamer",
+  "VTuber Channel",
+  "At The Disco",
+  "Seriously Needs Help",
+  "Is Exactly What You Would Expect",
+  "Is Not A Moon",
+  "Comes In Peace",
+  "Came In Peace",
+  "Came And Was Pacified",
+  "Is Playing The Stock Market",
+  "Is Playing Armored Core",
+  "Sucks At Armored Core",
+  "Is Playing GG Strive",
+  "Sucks At GG Strive",
+  "Has A Town Inside Them",
+  "Forgor",
+  "Should Get A Job",
+  "And My 99 Other GFs",
+  "Had one Job",
+  "Does Dirty Deeds For Dirt Cheap",
+  "Is Getting Married To Hatsune Miku",
+  "Doesn't Know How To Spell",
+  "Does Know How To Spell",
+  "Has A Cease And Desist",
+  "Doing A Backflip",
+  "Hands Off Best Warframe",
+  "Is Just A Little Guy",
+  "Is Cooking",
+  "Should Not Cook Ever Again",
+  "Does Math And Fails Epicly",
+  "And Their Extreme Case Of DumDum",
+  "Commits Tax Evasion",
+  "Commits Fraud",
+  "Commits Robbery",
+  "Commits To Their Relationship",
+  "Commits A War Crime",
+  "Is A Weeb",
+  "Is Playing A Weeb Game",
+  "Listens To 100 Hours Of Caramelldansen",
+  "Is Hatsune Miku's Biggest Fan",
+  "But Better",
+  "But Worse",
+  "Is Coming For Your Taxes",
+  "Is A True Wingman",
 ];
 
 /**
@@ -233,15 +296,9 @@ function findEmptyVoiceChannels(
 async function createVoiceChannel(
   voiceCategory: CategoryChannel,
 ): Promise<VoiceChannel> {
-  const prefix = _.sample(CHANNEL_NAMES);
-  const suffix = (Date.now() / 1000)
-    .toString(16)
-    .padStart(2, "0")
-    .slice(-2)
-    .toLocaleUpperCase()
-    .split("")
-    .join("-");
-  const channelName = `${prefix} ${suffix}`;
+  const channelNamePrefix = _.sample(CHANNEL_NAMES);
+  const channelNameSuffix = _.sample(NAME_ACCOLADES);
+  const channelName = `${channelNamePrefix} ${channelNameSuffix}`;
   const voiceChannels = voiceCategory.children.cache.filter(
     (channel): channel is VoiceChannel => {
       // Filter out non-voice channels
@@ -260,6 +317,10 @@ async function createVoiceChannel(
   return channel;
 }
 
+/**
+ * Cleans up empty voice channels.
+ * @param voiceChannels - The collection of voice channels to clean up.
+ */
 async function cleanUp(voiceChannels: Collection<string, VoiceChannel>) {
   // Queue channels for deletion
   const deletableVoiceChannels = queueChannelsForDeletion(voiceChannels);
@@ -271,16 +332,19 @@ async function cleanUp(voiceChannels: Collection<string, VoiceChannel>) {
   await deleteChannels(deletableVoiceChannels);
 }
 
+/**
+ * Queues empty voice channels for deletion by giving them an expiration timestamp.
+ * @param voiceChannels - The collection of voice channels to check and queue for deletion.
+ * @returns A collection of voice channels that have been queued for deletion.
+ */
 function queueChannelsForDeletion(
   voiceChannels: Collection<string, VoiceChannel>,
 ) {
   const deletableVoiceChannels = voiceChannels
     .filter((channel) => {
       // Sanity check: Check if channel is protected and as thus should not be deleted
-      for (const protectedChannelId of PROTECTED_CHANNEL_IDS) {
-        const isNotProtected = channel.id !== protectedChannelId;
-        return isNotProtected;
-      }
+      const isProtected = PROTECTED_CHANNEL_IDS.includes(channel.id);
+      return !isProtected;
     })
     .filter((channel) => {
       // Check if channel is empty
@@ -301,6 +365,10 @@ function queueChannelsForDeletion(
   return deletableVoiceChannels;
 }
 
+/**
+ * Deletes the specified voice channels if they are still empty and have reached their expiration timestamp.
+ * @param voiceChannels - The collection of voice channels to check and delete if necessary.
+ */
 async function deleteChannels(voiceChannels: Collection<string, VoiceChannel>) {
   const deletableVoiceChannels = voiceChannels
     .filter((channel) => {
@@ -323,6 +391,11 @@ async function deleteChannels(voiceChannels: Collection<string, VoiceChannel>) {
   }
 }
 
+/**
+ * Deletes the specified voice channel if it is still empty.
+ * @param voiceChannel - The voice channel to check and delete if necessary.
+ * @returns A promise that resolves when the channel has been deleted or if it was not deletable.
+ */
 async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Prevent members from joining voice channel. This is to prevent a race condition where someone joins the channel just before it gets deleted.
   const channelFreezeOptions: GuildChannelEditOptions = {
@@ -337,6 +410,9 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
       userLimit: undefined,
     };
     await voiceChannel.edit(channelUnfreezeOptions);
+
+    // Reset deletion state so the channel can be queued again later.
+    channelExpirationTimestamps.delete(voiceChannel.id);
     return;
   }
 
@@ -346,8 +422,3 @@ async function deleteChannel(voiceChannel: VoiceBasedChannel) {
   // Clean up from map
   channelExpirationTimestamps.delete(voiceChannel.id);
 }
-
-/**
- * There might still be a bug where the voice channel that is supposed to be cleaned up
- * does not get deleted or does not get its new deletion timestamp bumped.
- */

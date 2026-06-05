@@ -1,6 +1,6 @@
-import handleSarcasm from "../modules/sarcasmDisclaimer.js";
-import handle8ball from "../modules/8ball.js";
-import handleSoon from "../modules/reactToMessagesEndingWithSoon.js";
+import handleSarcasm from "../modules/sarcasmDisclaimer.ts";
+import handle8ball from "../modules/8ball.ts";
+import handleSoon from "../modules/reactToMessagesEndingWithSoon.ts";
 import { Client, Events, Message } from "discord.js";
 
 export default function (client: Client) {

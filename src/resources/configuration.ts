@@ -26,10 +26,10 @@ export interface Configuration {
 
 let config: Configuration;
 if (process.env.NODE_ENV === "production") {
-  config = (await import("./makeshift.js")).default;
+  config = (await import("./makeshift.ts")).default;
 } else {
   console.log("Loaded configuration for development mode");
-  config = (await import("./development.js")).default;
+  config = (await import("./development.ts")).default;
 }
 
 export default config;

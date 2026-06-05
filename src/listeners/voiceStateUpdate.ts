@@ -1,5 +1,5 @@
+import handleVoice from "../modules/maintainEmptyVoiceChannel.ts";
 import { Client, Events, VoiceState } from "discord.js";
-import handleVoice from "../modules/maintainEmptyVoiceChannel.js";
 
 export default function (client: Client) {
   client.on(Events.VoiceStateUpdate, handle);

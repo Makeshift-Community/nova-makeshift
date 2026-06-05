@@ -1,4 +1,4 @@
-import Command from "../Command.js";
+import type Command from "../Command.ts";
 
 import {
   ChatInputCommandInteraction,
@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 
 const WikiArticleSearcher = axios.create({
-  baseURL: "https://warframe.fandom.com/api.php",
+  baseURL: "https://wiki.warframe.com/api.php",
   timeout: 10000,
   headers: {
     "User-Agent": "axios",
@@ -18,6 +18,8 @@ const WikiArticleSearcher = axios.create({
     format: "json",
     namespace: "0",
     limit: "1",
+    utf8: "1",
+    formatversion: "2",
   },
 });
 
@@ -47,7 +49,7 @@ async function handle(interaction: ChatInputCommandInteraction) {
   await interaction.deferReply();
 
   // Search for entry
-  const search = await WikiArticleSearcher.get<WikiaOpensearchResponse>("/", {
+  const search = await WikiArticleSearcher.get<WikiaOpensearchResponse>("", {
     params: { search: searchTerm },
   });
   const data = search.data;

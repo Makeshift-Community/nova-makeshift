@@ -1,8 +1,8 @@
-import { GuildMember, TextChannel } from "discord.js";
-import CONFIG from "../resources/configuration.js";
+import CONFIG from "../resources/configuration.ts";
 const { GUILD_ID, TEXT_CHANNELS } = CONFIG;
 const { GENERAL_CHANNEL_ID } = TEXT_CHANNELS;
 import _ from "lodash";
+import { GuildMember, TextChannel } from "discord.js";
 
 const SUBJECTS = [
   "Ryan Gosling movie",
@@ -43,7 +43,7 @@ export default async function (member: GuildMember) {
   // Send welcome message
   channel
     .send(
-      `Welcome to the Makeshift community Discord, ${member.toString()}. State your favorite ${subject}, NOW!`,
+      `Welcome to the Makeshift community Discord, ${member.toString()}.\n# State your favorite ${subject}, NOW!`,
     )
     .catch(console.error);
 }

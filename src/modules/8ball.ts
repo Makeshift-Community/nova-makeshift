@@ -85,7 +85,7 @@ function pickResponse(message: Message): string {
 
 export default async function (message: Message) {
   // Check if message was received on guild
-  if (message.guild === null) {
+  if (!message.inGuild()) {
     return;
   }
 

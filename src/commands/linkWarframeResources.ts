@@ -1,5 +1,5 @@
-import { italic, bracketed } from "../utils/customFormatters.js";
-
+import type Command from "../Command.ts";
+import { italic, bracketed } from "../utils/customFormatters.ts";
 import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -7,7 +7,6 @@ import {
   hideLinkEmbed,
   hyperlink,
 } from "discord.js";
-import Command from "../Command.js";
 
 const name = "link";
 
@@ -76,12 +75,8 @@ interface SubcommandResponseCollection {
 
 const subcommandResponses: SubcommandResponseCollection = {
   [wikiSubcommandBuilder.name]: {
-    url: "https://warframe.fandom.com/wiki/WARFRAME_Wiki",
-    displayEmbed: false,
-    disclaimer:
-      "Note: While this community is not operated by Digital Extremes, it is officially endorsed by them",
-    disclaimerSource:
-      "https://warframe.fandom.com/wiki/WARFRAME_Wiki:Official_Wiki",
+    url: "https://wiki.warframe.com/",
+    displayEmbed: true,
   },
   [overframeSubcommandBuilder.name]: {
     url: "https://overframe.gg/",
@@ -116,7 +111,7 @@ const subcommandResponses: SubcommandResponseCollection = {
     displayEmbed: false,
   },
   [glyphSubcommandBuilder.name]: {
-    url: "https://forums.warframe.com/topic/992008-free-promocodes-and-glyphs-all-platforms/",
+    url: "https://forums.warframe.com/topic/992008-free-promocodes-and-content-creator-glyphs/",
     displayEmbed: true,
     disclaimer:
       "Note: This content is not officially endorsed by Digital Extremes",

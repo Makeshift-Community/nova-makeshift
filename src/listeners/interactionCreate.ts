@@ -1,5 +1,5 @@
-import { Client, Events, Interaction } from "discord.js";
-import commands from "../commands.js";
+import commands from "../commands.ts";
+import { Client, Events, type Interaction } from "discord.js";
 
 export default function (client: Client) {
   client.on(Events.InteractionCreate, handle);
