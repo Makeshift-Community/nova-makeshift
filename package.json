@@ -2,14 +2,14 @@
   "name": "nova-makeshift",
   "version": "8.0.0",
   "description": "A bot for the Makeshift community.",
-  "main": "index.ts",
+  "main": "bot.ts",
   "type": "module",
   "engines": {
     "node": "^24.16.0"
   },
   "scripts": {
     "start": "node .",
-    "start:register": "node register.ts",
+    "start:register": "node registerCommands.ts",
     "lint": "npx prettier --write . && npx eslint .",
     "debug": "npm start",
     "build": "npm run lint"
