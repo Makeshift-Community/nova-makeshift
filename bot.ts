@@ -1,5 +1,5 @@
 // External dependencies
-import 'dotenv/config';
+import "dotenv/config";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 
 // Custom dependencies
