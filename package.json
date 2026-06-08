@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node .",
-    "start:register": "node registerCommands.ts",
+    "start:register": "npm run start:registerCommands",
+    "start:registerCommands": "node registerCommands.ts",
     "lint": "npx prettier --write . && npx eslint .",
     "debug": "npm start",
     "build": "npm run lint"
