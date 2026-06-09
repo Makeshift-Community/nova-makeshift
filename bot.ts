@@ -1,8 +1,8 @@
 // External dependencies
+import "dotenv/config";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 
 // Custom dependencies
-import TOKEN from "./token.ts"; // I'm an idiot, thanks for the lesson
 import registerModules from "./src/listeners.ts";
 
 // Display warning if we're in development mode
@@ -30,5 +30,5 @@ function handleLoginError(error: Error) {
 }
 
 // Start bot
-await client.login(TOKEN).catch(handleLoginError);
+await client.login(process.env.TOKEN).catch(handleLoginError);
 console.log(`Logged in as ${client.user?.tag}`);
